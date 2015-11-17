@@ -14,6 +14,12 @@ import java.util.List;
  */
 public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 
+	private static final byte[] OPENTYPE_BEGIN = new byte[]{0x4f, 0x54, 0x54, 0x4f};
+	private static final byte[] PS_TYPE1_BEGIN = new byte[]{0x25, 0x21};
+	private static final byte[] TRUE_TYPE_BEGIN = new byte[]{0x00, 0x01, 0x00, 0x00};
+
+	private static final String FAIL = "Can not obtain font file type";
+
 	private static final Logger LOGGER = Logger
 			.getLogger(FontTypeExtractor.class);
 
@@ -32,8 +38,29 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	}
 
 	private static String getFontType(byte[] file) {
-		//TODO: getFont file type
-		return "Some font type";
+		//TODO: Check this and add check for CFF Type1 font
+
+		if (isMatchs(file, PS_TYPE1_BEGIN)) {
+			return "PS Type1";
+		} else if (isMatchs(file, OPENTYPE_BEGIN)) {
+			return "OpenType";
+		} else if (isMatchs(file, TRUE_TYPE_BEGIN)) {
+			return "TrueType";
+		} else {
+			return FAIL;
+		}
+	}
+
+	private static boolean isMatchs(byte[] orig, byte[] match) {
+		if (orig.length < match.length) {
+			return false;
+		}
+		for (int i = 0; i < match.length; ++i) {
+			if (orig[i] != match[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public String getDescription() {
