@@ -38,14 +38,14 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	}
 
 	private static String getFontType(byte[] file) {
-		//TODO: Check this and add check for CFF Type1 font
-
 		if (isMatchs(file, PS_TYPE1_BEGIN)) {
 			return "PS Type1";
 		} else if (isMatchs(file, OPENTYPE_BEGIN)) {
 			return "OpenType";
 		} else if (isMatchs(file, TRUE_TYPE_BEGIN)) {
 			return "TrueType";
+		} else if (file[0] == 1 && (file[1] >= 0 && file[1] <= 5)) {
+			return "CFF Type1";
 		} else {
 			return FAIL;
 		}
