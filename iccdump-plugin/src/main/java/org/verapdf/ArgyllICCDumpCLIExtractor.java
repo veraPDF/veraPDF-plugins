@@ -86,6 +86,10 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		}
 		pr.waitFor();
 
+		if (res.isEmpty()) {
+			res.add(FeatureTreeNode.newRootInstanceWithValue("error", "Did not find any header or tag information." +
+					" Probably there is no iccdump file in the plugin folder or it is not for your version of the Operating System."));
+		}
 		return res;
 	}
 
