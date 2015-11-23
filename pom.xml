@@ -23,6 +23,10 @@
     <modules>
         <module>fontType-plugin</module>
         <module>iccdump-plugin</module>
+        <module>iccprofileSample-plugin</module>
+        <module>fontSample-plugin</module>
+        <module>embeddedfileSample-plugin</module>
+        <module>imageSample-plugin</module>
     </modules>
 
     <dependencies>
