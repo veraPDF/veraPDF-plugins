@@ -29,7 +29,9 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 
 		String fontType = getFontType(fontFeaturesData.getStream());
 		try {
-			res.add(FeatureTreeNode.newRootInstanceWithValue("fontTypeFromFile", fontType));
+			FeatureTreeNode fontTypeFromFile = FeatureTreeNode.createRootNode("fontTypeFromFile");
+			fontTypeFromFile.setValue(fontType);
+			res.add(fontTypeFromFile);
 		} catch (FeatureParsingException e) {
 			LOGGER.error(e);
 		}

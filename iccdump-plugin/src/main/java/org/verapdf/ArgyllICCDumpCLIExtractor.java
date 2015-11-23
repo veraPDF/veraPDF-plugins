@@ -54,29 +54,29 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		String line = reader.readLine();
 		while (line != null) {
 			if ("Header:".equals(line.trim())) {
-				FeatureTreeNode header = FeatureTreeNode.newRootInstance("header");
+				FeatureTreeNode header = FeatureTreeNode.createRootNode("header");
 				line = reader.readLine();
 
 				while (line != null && !("".equals(line.trim()))) {
 					int eqind = line.indexOf("=");
 					String name = line.substring(0, eqind).trim();
 					String value = line.substring(eqind + 1).trim();
-					FeatureTreeNode entry = FeatureTreeNode.newChildInstance("headerEntry", header);
-					entry.addAttribute("name", name);
-					entry.addAttribute("value", value);
+					FeatureTreeNode entry = FeatureTreeNode.createChildNode("headerEntry", header);
+					entry.setAttribute("name", name);
+					entry.setAttribute("value", value);
 					line = reader.readLine();
 				}
 				res.add(header);
 			} else if (line.trim().startsWith("tag")) {
-				FeatureTreeNode tag = FeatureTreeNode.newRootInstance("tag");
-				tag.addAttribute("number", line.trim().substring(4, line.length() - 1));
+				FeatureTreeNode tag = FeatureTreeNode.createRootNode("tag");
+				tag.setAttribute("number", line.trim().substring(4, line.length() - 1));
 
 				line = reader.readLine();
 				while (line != null && !("".equals(line.trim()))) {
 					int spind = line.trim().indexOf(" ");
 					String name = line.trim().substring(0, spind);
 					String value = line.trim().substring(spind).trim();
-					FeatureTreeNode.newChildInstanceWithValue(name, value, tag);
+					FeatureTreeNode.createChildNode(name, tag).setValue(value);
 					line = reader.readLine();
 				}
 				res.add(tag);
@@ -87,8 +87,10 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		pr.waitFor();
 
 		if (res.isEmpty()) {
-			res.add(FeatureTreeNode.newRootInstanceWithValue("error", "Did not find any header or tag information." +
-					" Probably there is no iccdump file in the plugin folder or it is not for your version of the Operating System."));
+			FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
+			error.setValue("Did not find any header or tag information." +
+					" Probably there is no iccdump file in the plugin folder or it is not for your version of the Operating System.");
+			res.add(error);
 		}
 		return res;
 	}
