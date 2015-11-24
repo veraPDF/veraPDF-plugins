@@ -35,7 +35,22 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			String nString = String.valueOf(iccProfileFeaturesData.getN());
 			FeatureTreeNode nNode = FeatureTreeNode.createRootNode("nValue");
 			nNode.setValue(nString);
+			res.add(nNode);
 
+			List<Double> range = iccProfileFeaturesData.getRange();
+			FeatureTreeNode rangeNode = FeatureTreeNode.createRootNode("range");
+			res.add(rangeNode);
+			if (range == null) {
+				rangeNode.setValue("null");
+			} else if (range.size() == 0) {
+				rangeNode.setValue("Range array is empty");
+			} else {
+				for (int i = 0; i < range.size(); ++i) {
+					FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+					entry.setValue(String.valueOf(range.get(i)));
+					entry.setAttribute("index", String.valueOf(i));
+				}
+			}
 
 		} catch (FeatureParsingException e) {
 			LOGGER.error("Some fail in logic", e);
