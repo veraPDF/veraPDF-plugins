@@ -20,6 +20,7 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	private static final byte[] OPENTYPE_BEGIN = new byte[]{0x4f, 0x54, 0x54, 0x4f};
 	private static final byte[] PS_TYPE1_BEGIN = new byte[]{0x25, 0x21};
 	private static final byte[] TRUE_TYPE_BEGIN = new byte[]{0x00, 0x01, 0x00, 0x00};
+	private static final byte[] TRUE_TYPE_TRUE_BEGIN = new byte[]{0x74, 0x72, 0x75, 0x65};
 
 	private static final String FAIL = "Can not obtain font file type";
 
@@ -44,7 +45,7 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 			return "PS Type1";
 		} else if (isMatchs(file, OPENTYPE_BEGIN)) {
 			return "OpenType";
-		} else if (isMatchs(file, TRUE_TYPE_BEGIN)) {
+		} else if (isMatchs(file, TRUE_TYPE_BEGIN) || isMatchs(file, TRUE_TYPE_TRUE_BEGIN)) {
 			return "TrueType";
 		} else if (file[0] == 1 && (file[1] >= 0 && file[1] <= 5)) {
 			return "CFF Type1";

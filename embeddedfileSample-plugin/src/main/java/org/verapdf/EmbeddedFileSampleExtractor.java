@@ -26,6 +26,7 @@ public class EmbeddedFileSampleExtractor extends AbstractEmbeddedFileFeaturesExt
 			stream.setValue(DatatypeConverter.printHexBinary(embeddedFileFeaturesData.getStream()));
 			res.add(stream);
 
+
 		} catch (FeatureParsingException e) {
 			LOGGER.error("Some fail in logic", e);
 		}
