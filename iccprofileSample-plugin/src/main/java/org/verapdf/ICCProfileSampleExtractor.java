@@ -27,28 +27,26 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			res.add(stream);
 
 			byte[] meta = iccProfileFeaturesData.getMetadata();
-			FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-			String metaValue = meta == null ? "null" : DatatypeConverter.printHexBinary(meta);
-			metadata.setValue(metaValue);
-			res.add(metadata);
+			if (meta != null) {
+				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
+				String metaValue = DatatypeConverter.printHexBinary(meta);
+				metadata.setValue(metaValue);
+				res.add(metadata);
+			}
 
-			String nString = String.valueOf(iccProfileFeaturesData.getN());
-			FeatureTreeNode nNode = FeatureTreeNode.createRootNode("nValue");
-			nNode.setValue(nString);
-			res.add(nNode);
+			addObjectNode("nValue", iccProfileFeaturesData.getN(), res);
 
 			List<Double> range = iccProfileFeaturesData.getRange();
-			FeatureTreeNode rangeNode = FeatureTreeNode.createRootNode("range");
-			res.add(rangeNode);
-			if (range == null) {
-				rangeNode.setValue("null");
-			} else if (range.size() == 0) {
-				rangeNode.setValue("Range array is empty");
-			} else {
+			if (range != null) {
+				FeatureTreeNode rangeNode = FeatureTreeNode.createRootNode("range");
+				res.add(rangeNode);
 				for (int i = 0; i < range.size(); ++i) {
-					FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
-					entry.setValue(String.valueOf(range.get(i)));
-					entry.setAttribute("index", String.valueOf(i));
+					Double obj = range.get(i);
+					if (obj != null) {
+						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+						entry.setValue(String.valueOf(obj));
+						entry.setAttribute("index", String.valueOf(i));
+					}
 				}
 			}
 
@@ -56,6 +54,15 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			LOGGER.error("Some fail in logic", e);
 		}
 		return res;
+	}
+
+	private static FeatureTreeNode addObjectNode(String nodeName, Object toAdd, List<FeatureTreeNode> list) throws FeatureParsingException {
+		FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
+		list.add(node);
+		if (toAdd != null) {
+			node.setValue(toAdd.toString());
+		}
+		return node;
 	}
 
 	@Override

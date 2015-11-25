@@ -22,7 +22,7 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	private static final byte[] TRUE_TYPE_BEGIN = new byte[]{0x00, 0x01, 0x00, 0x00};
 	private static final byte[] TRUE_TYPE_TRUE_BEGIN = new byte[]{0x74, 0x72, 0x75, 0x65};
 
-	private static final String FAIL = "Can not obtain font file type";
+	private static final String UNDEFINED = "Undefined";
 
 	@Override
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
@@ -41,25 +41,25 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	}
 
 	private static String getFontType(byte[] file) {
-		if (isMatchs(file, PS_TYPE1_BEGIN)) {
+		if (startsWith(file, PS_TYPE1_BEGIN)) {
 			return "PS Type1";
-		} else if (isMatchs(file, OPENTYPE_BEGIN)) {
+		} else if (startsWith(file, OPENTYPE_BEGIN)) {
 			return "OpenType";
-		} else if (isMatchs(file, TRUE_TYPE_BEGIN) || isMatchs(file, TRUE_TYPE_TRUE_BEGIN)) {
+		} else if (startsWith(file, TRUE_TYPE_BEGIN) || startsWith(file, TRUE_TYPE_TRUE_BEGIN)) {
 			return "TrueType";
 		} else if (file[0] == 1 && (file[1] >= 0 && file[1] <= 5)) {
 			return "CFF Type1";
 		} else {
-			return FAIL;
+			return UNDEFINED;
 		}
 	}
 
-	private static boolean isMatchs(byte[] orig, byte[] match) {
-		if (orig.length < match.length) {
+	private static boolean startsWith(byte[] orig, byte[] pattern) {
+		if (orig.length < pattern.length) {
 			return false;
 		}
-		for (int i = 0; i < match.length; ++i) {
-			if (orig[i] != match[i]) {
+		for (int i = 0; i < pattern.length; ++i) {
+			if (orig[i] != pattern[i]) {
 				return false;
 			}
 		}

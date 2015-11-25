@@ -27,10 +27,12 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			res.add(stream);
 
 			byte[] meta = fontFeaturesData.getMetadata();
-			FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-			String metaValue = meta == null ? "null" : DatatypeConverter.printHexBinary(meta);
-			metadata.setValue(metaValue);
-			res.add(metadata);
+			if (meta != null) {
+				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
+				String metaValue = DatatypeConverter.printHexBinary(meta);
+				metadata.setValue(metaValue);
+				res.add(metadata);
+			}
 
 		} catch (FeatureParsingException e) {
 			LOGGER.error("Some fail in logic", e);

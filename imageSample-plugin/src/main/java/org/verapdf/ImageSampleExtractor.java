@@ -28,44 +28,34 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 			res.add(stream);
 
 			byte[] meta = imageFeaturesData.getMetadata();
-			FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-			String metaValue = meta == null ? "null" : DatatypeConverter.printHexBinary(meta);
-			metadata.setValue(metaValue);
-			res.add(metadata);
+			if (meta != null) {
+				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
+				String metaValue = DatatypeConverter.printHexBinary(meta);
+				metadata.setValue(metaValue);
+				res.add(metadata);
+			}
 
-			FeatureTreeNode widthNode = FeatureTreeNode.createRootNode("width");
-			res.add(widthNode);
-			widthNode.setValue(String.valueOf(imageFeaturesData.getWidth()));
-
-			FeatureTreeNode heightNode = FeatureTreeNode.createRootNode("height");
-			res.add(heightNode);
-			heightNode.setValue(String.valueOf(imageFeaturesData.getHeight()));
-
-			FeatureTreeNode filtersNode = FeatureTreeNode.createRootNode("filters");
-			res.add(filtersNode);
+			addObjectNode("width", imageFeaturesData.getWidth(), res);
+			addObjectNode("height", imageFeaturesData.getHeight(), res);
 
 			List<ImageFeaturesData.Filter> filters = imageFeaturesData.getFilters();
-			if (filters == null) {
-				filtersNode.setValue("null");
-			} else if (filters.size() == 0) {
-				filtersNode.setValue("Filters array is empty");
-			} else {
+			if (filters != null) {
+				FeatureTreeNode filtersNode = FeatureTreeNode.createRootNode("filters");
+				res.add(filtersNode);
 				for (ImageFeaturesData.Filter filter : filters) {
 					FeatureTreeNode filterNode = FeatureTreeNode.createChildNode("filter", filtersNode);
 					filterNode.setAttribute("name", String.valueOf(filter.getName()));
 					Map<String, String> properties = filter.getProperties();
-					if (properties == null) {
-						FeatureTreeNode.createChildNode("properties", filterNode).setValue("null");
-					} else if (properties.size() == 0) {
-						FeatureTreeNode.createChildNode("properties", filterNode).setValue("empty");
-					} else {
+					if (properties != null) {
 						for (Map.Entry entry : properties.entrySet()) {
 							FeatureTreeNode.createChildNode(String.valueOf(entry.getKey()), filterNode).setValue(String.valueOf(entry.getValue()));
 						}
 					}
 					byte[] streamF = filter.getStream();
-					String streamContent = streamF == null ? "null" : DatatypeConverter.printHexBinary(streamF);
-					FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
+					if (streamF != null) {
+						String streamContent = DatatypeConverter.printHexBinary(streamF);
+						FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
+					}
 				}
 			}
 
@@ -75,6 +65,15 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 		return res;
 	}
 
+	private static FeatureTreeNode addObjectNode(String nodeName, Object toAdd, List<FeatureTreeNode> list) throws FeatureParsingException {
+		FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
+		list.add(node);
+		if (toAdd != null) {
+			node.setValue(toAdd.toString());
+		}
+		return node;
+	}
+
 	@Override
 	public String getID() {
 		return "163e5726-3c5a-4701-abdc-428005c8c39d";
@@ -82,6 +81,6 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 
 	@Override
 	public String getDescription() {
-		return "Sample iccprofile extractor.";
+		return "Sample image extractor.";
 	}
 }
