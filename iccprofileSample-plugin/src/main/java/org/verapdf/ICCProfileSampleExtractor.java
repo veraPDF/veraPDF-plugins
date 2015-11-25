@@ -44,7 +44,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 					Double obj = range.get(i);
 					if (obj != null) {
 						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
-						entry.setValue(String.valueOf(obj));
+						entry.setValue(obj.toString());
 						entry.setAttribute("index", String.valueOf(i));
 					}
 				}
@@ -57,9 +57,10 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 	}
 
 	private static FeatureTreeNode addObjectNode(String nodeName, Object toAdd, List<FeatureTreeNode> list) throws FeatureParsingException {
-		FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
-		list.add(node);
+		FeatureTreeNode node = null;
 		if (toAdd != null) {
+			node = FeatureTreeNode.createRootNode(nodeName);
+			list.add(node);
 			node.setValue(toAdd.toString());
 		}
 		return node;

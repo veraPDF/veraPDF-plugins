@@ -66,9 +66,10 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 	}
 
 	private static FeatureTreeNode addObjectNode(String nodeName, Object toAdd, List<FeatureTreeNode> list) throws FeatureParsingException {
-		FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
-		list.add(node);
+		FeatureTreeNode node = null;
 		if (toAdd != null) {
+			node = FeatureTreeNode.createRootNode(nodeName);
+			list.add(node);
 			node.setValue(toAdd.toString());
 		}
 		return node;
