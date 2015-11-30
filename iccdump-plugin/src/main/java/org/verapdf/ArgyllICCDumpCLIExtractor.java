@@ -19,15 +19,19 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 	private static final Logger LOGGER = Logger
 			.getLogger(ArgyllICCDumpCLIExtractor.class);
 
-	private String FILE_PATH;
+	private File temp;
 
 	@Override
 	public List<FeatureTreeNode> getICCProfileFeatures(ICCProfileFeaturesData iccProfileFeaturesData) {
-		if (this.FILE_PATH == null) {
-			this.FILE_PATH = getFolderPath().toString() + "/iccProfile.icc";
+		try {
+			temp = File.createTempFile("tempICC", ".icc");
+		} catch (IOException e) {
+			LOGGER.error(e);
+			return null;
 		}
+
 		List<FeatureTreeNode> res = null;
-		generateICCProfile(iccProfileFeaturesData);
+		generateICCProfile(iccProfileFeaturesData.getStream());
 		try {
 			res = execCLI();
 		} catch (InterruptedException | FeatureParsingException e) {
@@ -46,8 +50,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			Runtime rt = Runtime.getRuntime();
-			String filePath = new File(FILE_PATH).getAbsolutePath();
-			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", filePath};
+			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", temp.getAbsolutePath()};
 			Process pr = rt.exec(str);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 
@@ -99,10 +102,9 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		return res;
 	}
 
-	private void generateICCProfile(ICCProfileFeaturesData featuresData) {
-		byte[] icc = featuresData.getStream();
+	private void generateICCProfile(byte[] icc) {
 		try {
-			FileOutputStream out = new FileOutputStream(FILE_PATH);
+			FileOutputStream out = new FileOutputStream(this.temp);
 			out.write(icc);
 			out.close();
 		} catch (IOException e) {
@@ -111,7 +113,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 	}
 
 	private void clean() throws IOException {
-		Files.deleteIfExists(new File(FILE_PATH).toPath());
+		Files.deleteIfExists(temp.toPath());
 	}
 
 	@Override
