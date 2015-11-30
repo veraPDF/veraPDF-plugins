@@ -48,8 +48,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 			Runtime rt = Runtime.getRuntime();
 			String filePath = new File(FILE_PATH).getAbsolutePath();
 			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", filePath};
-			Process pr = null;
-			pr = rt.exec(str);
+			Process pr = rt.exec(str);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 
 			String line = reader.readLine();
@@ -92,8 +91,9 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 
 		if (res.isEmpty()) {
 			FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
-			error.setValue("Did not find any header or tag information." +
-					" Probably there is no iccdump file in the plugin folder or it is not for your version of the Operating System.");
+			error.setValue("Failed to find any header or tag information." +
+					" Probably there is no iccdump executable in the plugin folder or the executable is not compatible " +
+					"with your Operating System.");
 			res.add(error);
 		}
 		return res;
@@ -121,6 +121,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 
 	@Override
 	public String getDescription() {
-		return "Extracts header and minor information of the tags from the iccProfile using the Argyll iccdump CLI.";
+		return "This Extractor generates custom features report containing header and information about tags from " +
+				"the iccProfile using the Argyll iccdump command line application.";
 	}
 }

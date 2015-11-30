@@ -67,7 +67,8 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	}
 
 	public String getDescription() {
-		return "Extracts font type from the font file.";
+		return "This Extractor generates custom features report containing one entry " +
+				"that is the font type read from file.";
 	}
 
 	public String getID() {

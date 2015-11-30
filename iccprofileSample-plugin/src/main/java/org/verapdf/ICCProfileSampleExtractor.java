@@ -29,8 +29,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			byte[] meta = iccProfileFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				String metaValue = DatatypeConverter.printHexBinary(meta);
-				metadata.setValue(metaValue);
+				metadata.setValue(DatatypeConverter.printHexBinary(meta));
 				res.add(metadata);
 			}
 
@@ -73,6 +72,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 
 	@Override
 	public String getDescription() {
-		return "Sample iccprofile extractor.";
+		return "This sample Extractor generates custom features report containing data from incoming " +
+				"ICCProfileFeaturesData object.";
 	}
 }

@@ -30,8 +30,7 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 			byte[] meta = imageFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				String metaValue = DatatypeConverter.printHexBinary(meta);
-				metadata.setValue(metaValue);
+				metadata.setValue(DatatypeConverter.printHexBinary(meta));
 				res.add(metadata);
 			}
 
@@ -51,6 +50,8 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 							FeatureTreeNode.createChildNode(String.valueOf(entry.getKey()), filterNode).setValue(String.valueOf(entry.getValue()));
 						}
 					}
+
+					//Special case for JBIG2Decode filter
 					byte[] streamF = filter.getStream();
 					if (streamF != null) {
 						String streamContent = DatatypeConverter.printHexBinary(streamF);
@@ -82,6 +83,7 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 
 	@Override
 	public String getDescription() {
-		return "Sample image extractor.";
+		return "This sample Extractor generates custom features report containing data from incoming " +
+				"ImageFeaturesData object.";
 	}
 }

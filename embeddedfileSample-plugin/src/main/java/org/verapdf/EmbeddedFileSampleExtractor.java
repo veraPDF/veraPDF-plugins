@@ -71,6 +71,7 @@ public class EmbeddedFileSampleExtractor extends AbstractEmbeddedFileFeaturesExt
 
 	@Override
 	public String getDescription() {
-		return "Sample embedded file extractor.";
+		return "This sample Extractor generates custom features report containing data from incoming " +
+				"EmbeddedFileFeaturesData object.";
 	}
 }
