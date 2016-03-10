@@ -9,6 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>iccdump-plugin</artifactId>
+    <artifactId>metsMetadata-plugin</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>au.edu.apsr.mtk</groupId>
+            <artifactId>mets</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/mets-api.jar</systemPath>
+        </dependency>
+    </dependencies>
 
 </project>
