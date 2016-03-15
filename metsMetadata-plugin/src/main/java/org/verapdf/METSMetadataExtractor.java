@@ -197,19 +197,9 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         }
     }
 
-    private File getOutFile() {
-        File fold = getFolderPath().toFile();
-        File outFold = new File(fold, "out");
-        if (!outFold.exists() && !outFold.mkdir()) {
-            throw new IllegalStateException("Can not create output directory");
-        }
-
-        File res = new File(outFold, "mets.xml");
-        int i = 0;
-        while (res.exists()) {
-            res = new File(outFold, "mets_" + ++i + ".xml");
-        }
-        return res;
+    private File getOutFile() throws IOException {
+        File temp = File.createTempFile("mets", ".xml");
+        return temp;
     }
 
     @Override
