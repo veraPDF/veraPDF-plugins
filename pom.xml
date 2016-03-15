@@ -8,6 +8,18 @@
     <artifactId>verapdf-library-samples</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>vera-dev</id>
+            <name>Vera development</name>
+            <url>http://artifactory.opf-labs.org/artifactory/vera-dev</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -27,13 +39,14 @@
         <module>fontSample-plugin</module>
         <module>embeddedfileSample-plugin</module>
         <module>imageSample-plugin</module>
+        <module>metsMetadata-plugin</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>feature-report</artifactId>
-            <version>0.7.0-SNAPSHOT</version>
+            <version>[0.11.0,0.12.0)</version>
         </dependency>
     </dependencies>
 
