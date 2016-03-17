@@ -7,7 +7,6 @@ import com.adobe.xmp.XMPMetaFactory;
 import com.adobe.xmp.impl.VeraPDFMeta;
 import com.adobe.xmp.impl.VeraPDFXMPNode;
 import com.adobe.xmp.impl.XMPSchemaRegistryImpl;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractMetadataFeaturesExtractor;
 import org.verapdf.features.MetadataFeaturesData;
@@ -15,6 +14,7 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -38,15 +38,16 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
     public List<FeatureTreeNode> getMetadataFeatures(MetadataFeaturesData metadataFeaturesData) {
         List<FeatureTreeNode> result = new ArrayList<>(1);
         try {
-            File outFile = getOutFile();
+            File outFile = getOutFile(result);
             byte[] bytes = metadataFeaturesData.getStream();
-            convertXMPToMETS(new ByteInputStream(bytes, bytes.length), new FileOutputStream(outFile));
+            convertXMPToMETS(new ByteArrayInputStream(bytes), new FileOutputStream(outFile));
             FeatureTreeNode node = FeatureTreeNode.createRootNode("resultFile");
             node.setValue(outFile.getCanonicalPath());
             result.add(node);
         } catch (XMPException | METSException | IOException | SAXException | FeatureParsingException | ParserConfigurationException e) {
             try {
-                FeatureTreeNode node = FeatureTreeNode.createRootNode("Error");
+                result.clear();
+                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
                 node.setValue(e.getMessage());
                 result.add(node);
             } catch (FeatureParsingException e1) {
@@ -61,46 +62,64 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         divideMetas(meta);
         METSWrapper metsWrapper = new METSWrapper();
         createMETS(metsWrapper);
-        metsWrapper.validate();
+        //TODO: fix mets creation in such way that validating will not generate any exceptions
+//        metsWrapper.validate();
         metsWrapper.write(out);
     }
 
     private void createMETS(METSWrapper metsWrapper) throws METSException, SAXException, ParserConfigurationException, XMPException, IOException {
         METS mets = metsWrapper.getMETSObject();
 
-        DmdSec dmd = mets.newDmdSec();
-        MdWrap dmdWrap = dmd.newMdWrap();
-        addXMPTreeToMdWrap(dmdWrap, this.dmdMeta);
-        dmd.setMdWrap(dmdWrap);
-        mets.addDmdSec(dmd);
+        if (this.dmdMeta != null) {
+            DmdSec dmd = mets.newDmdSec();
+            dmd.setID("DMD_ID_1");
+            MdWrap dmdWrap = dmd.newMdWrap();
+            addXMPTreeToMdWrap(dmdWrap, this.dmdMeta);
+            dmd.setMdWrap(dmdWrap);
+            mets.addDmdSec(dmd);
+        }
 
-        AmdSec amd = mets.newAmdSec();
+        if (this.rightsMeta != null || this.techMeta != null || this.sourceMeta != null || this.digiprovMeta != null) {
+            AmdSec amd = mets.newAmdSec();
 
-        RightsMD rightsMD = amd.newRightsMD();
-        MdWrap rightsWrap = rightsMD.newMdWrap();
-        addXMPTreeToMdWrap(rightsWrap, this.rightsMeta);
-        rightsMD.setMdWrap(rightsWrap);
-        amd.addRightsMD(rightsMD);
+            if (this.rightsMeta != null) {
+                RightsMD rightsMD = amd.newRightsMD();
+                rightsMD.setID("RIGHTSMD_ID_1");
+                MdWrap rightsWrap = rightsMD.newMdWrap();
+                addXMPTreeToMdWrap(rightsWrap, this.rightsMeta);
+                rightsMD.setMdWrap(rightsWrap);
+                amd.addRightsMD(rightsMD);
+            }
 
-        TechMD techMD = amd.newTechMD();
-        MdWrap techWrap = techMD.newMdWrap();
-        addXMPTreeToMdWrap(techWrap, this.techMeta);
-        techMD.setMdWrap(techWrap);
-        amd.addTechMD(techMD);
+            if (this.techMeta != null) {
+                TechMD techMD = amd.newTechMD();
+                techMD.setID("TECHMD_ID_1");
+                MdWrap techWrap = techMD.newMdWrap();
+                addXMPTreeToMdWrap(techWrap, this.techMeta);
+                techMD.setMdWrap(techWrap);
+                amd.addTechMD(techMD);
+            }
 
-        SourceMD sourceMD = amd.newSourceMD();
-        MdWrap sourceWrap = sourceMD.newMdWrap();
-        addXMPTreeToMdWrap(sourceWrap, this.sourceMeta);
-        sourceMD.setMdWrap(sourceWrap);
-        amd.addSourceMD(sourceMD);
+            if (this.sourceMeta != null) {
+                SourceMD sourceMD = amd.newSourceMD();
+                sourceMD.setID("SOURCEMD_ID_1");
+                MdWrap sourceWrap = sourceMD.newMdWrap();
+                addXMPTreeToMdWrap(sourceWrap, this.sourceMeta);
+                sourceMD.setMdWrap(sourceWrap);
+                amd.addSourceMD(sourceMD);
+            }
 
-        DigiprovMD digiprovMD = amd.newDigiprovMD();
-        MdWrap digiprovWrap = digiprovMD.newMdWrap();
-        addXMPTreeToMdWrap(digiprovWrap, this.rightsMeta);
-        digiprovMD.setMdWrap(digiprovWrap);
-        amd.addDigiprovMD(digiprovMD);
+            if (this.digiprovMeta != null) {
+                DigiprovMD digiprovMD = amd.newDigiprovMD();
+                digiprovMD.setID("DIGIPROVMD_ID_1");
+                MdWrap digiprovWrap = digiprovMD.newMdWrap();
+                addXMPTreeToMdWrap(digiprovWrap, this.digiprovMeta);
+                digiprovMD.setMdWrap(digiprovWrap);
+                amd.addDigiprovMD(digiprovMD);
+            }
 
-        mets.addAmdSec(amd);
+            mets.addAmdSec(amd);
+        }
     }
 
     private void addXMPTreeToMdWrap(MdWrap wrap, XMPMeta meta) throws XMPException, ParserConfigurationException, IOException, SAXException {
@@ -110,6 +129,8 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(new ByteArrayInputStream(bstream.toByteArray()));
         wrap.setXmlData(doc.getDocumentElement());
+        wrap.setMDType("OTHER");
+        wrap.setOtherMDType("XMP");
     }
 
     private void divideMetas(VeraPDFMeta meta) {
@@ -197,9 +218,58 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         }
     }
 
-    private File getOutFile() throws IOException {
-        File temp = File.createTempFile("mets", ".xml");
-        return temp;
+    private File getOutFile(List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
+        METSConfig config = getConfig(nodes);
+        if (config.getOutFolder() == null) {
+            File tempFolder = getTempFolder();
+            File res = getOutFileInFolder(tempFolder);
+            return res;
+        } else {
+            File outFolder = new File(config.getOutFolder());
+            if (outFolder.isDirectory()) {
+                File res = getOutFileInFolder(outFolder);
+                return res;
+            } else {
+                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
+                node.setValue("Config file contains out folder path but it doesn't link a directory.");
+                nodes.add(node);
+                File tempFolder = getTempFolder();
+                File res = getOutFileInFolder(tempFolder);
+                return res;
+            }
+        }
+    }
+
+    private File getTempFolder() {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        File tempFolder = new File(tempDir, "veraPDFMETSPluginTemp");
+        if (!tempFolder.exists()) {
+            tempFolder.mkdir();
+        }
+        return tempFolder;
+    }
+
+    private File getOutFileInFolder(File folder) throws IOException {
+        return File.createTempFile("veraPDF_METS_Plugin_out", ".xml", folder);
+    }
+
+    private METSConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
+        METSConfig config = METSConfig.defaultInstance();
+        File conf = getConfigFile();
+        if (conf.isFile() && conf.canRead()) {
+            try {
+                config = METSConfig.fromXml(new FileInputStream(conf));
+            } catch (JAXBException | FileNotFoundException e) {
+                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
+                node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
+                nodes.add(node);
+            }
+        }
+        return config;
+    }
+
+    private File getConfigFile() {
+        return new File(getFolderPath().toFile(), "config.xml");
     }
 
     @Override
