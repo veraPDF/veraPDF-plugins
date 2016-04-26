@@ -43,6 +43,17 @@
         <module>mediaconch</module>
     </modules>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>vera-dev</id>
+            <name>Vera development</name>
+            <url>http://artifactory.openpreservation.org/artifactory/vera-dev</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.verapdf</groupId>
