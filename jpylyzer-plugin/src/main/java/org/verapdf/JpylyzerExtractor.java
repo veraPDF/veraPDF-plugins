@@ -2,12 +2,23 @@ package org.verapdf;
 
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractImageFeaturesExtractor;
-import org.verapdf.features.EmbeddedFileFeaturesData;
 import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +45,7 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 				JpylyzerConfig config = getConfig(result);
 				File temp = generateTempFile(imageFeaturesData.getStream(), "jpx");
 				exec(result, config, temp);
-			} catch (IOException | InterruptedException e) {
+			} catch (IOException | InterruptedException | URISyntaxException e) {
 				FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
 				node.setValue("Error in execution. Error message: " + e.getMessage());
 				result.add(node);
@@ -55,15 +66,56 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return temp;
 	}
 
-	private void exec(List<FeatureTreeNode> nodes, JpylyzerConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException {
+	private static void exec(List<FeatureTreeNode> nodes, JpylyzerConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException, URISyntaxException {
+		String scriptPath = getSystemIndependentPath("/jpylyzer-master/jpylyzer/jpylyzer.py");
+		String[] args;
+		if (config.isVerbose()) {
+			args = new String[3];
+			args[0] = scriptPath;
+			args[1] = "--verbose";
+			args[2] = temp.getCanonicalPath();
+		} else {
+			args = new String[2];
+			args[0] = scriptPath;
+			args[1] = temp.getCanonicalPath();
+		}
+		Runtime rt = Runtime.getRuntime();
+		Process pr = rt.exec(args);
+		File out = getOutFile(config, nodes);
+		FileOutputStream outStream = new FileOutputStream(out);
+		byte[] buffer = new byte[1024];
+		int bytesRead;
+		while ((bytesRead = pr.getInputStream().read(buffer)) != -1)
+		{
+			outStream.write(buffer, 0, bytesRead);
+		}
+		pr.waitFor();
+		outStream.close();
+		FeatureTreeNode node = FeatureTreeNode.createRootNode("resultPath");
+		node.setValue(out.getCanonicalPath());
+		nodes.add(node);
 
-
-//		FeatureTreeNode node = FeatureTreeNode.createRootNode("resultPath");
-//		node.setValue(out.getCanonicalPath());
-//		nodes.add(node);
+		try {
+			String isValidJP2Value = getXMLNodeValue("//jpylyzer/isValidJP2", out);
+			FeatureTreeNode validationNode = FeatureTreeNode.createRootNode("isValidJP2");
+			validationNode.setValue(isValidJP2Value);
+			nodes.add(validationNode);
+		} catch (ParserConfigurationException | SAXException | XPathExpressionException e) {
+			FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
+			node.setValue("Error in obtaining validation result. Error message: " + e.getMessage());
+			nodes.add(error);
+		}
 	}
 
-	private File getOutFile(JpylyzerConfig config, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
+	private static String getXMLNodeValue(String xPath, File xml) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(xml);
+		XPathExpression xp = XPathFactory.newInstance().newXPath().compile(xPath);
+		return xp.evaluate(document);
+	}
+
+	private static File getOutFile(JpylyzerConfig config, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
 		if (config.getOutFolder() == null) {
 			File tempFolder = getTempFolder();
 			return getOutFileInFolder(tempFolder);
@@ -81,7 +133,7 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		}
 	}
 
-	private File getTempFolder() {
+	private static File getTempFolder() {
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
 		File tempFolder = new File(tempDir, "veraPDFJpylyzerPluginTemp");
 		if (!tempFolder.exists()) {
@@ -90,7 +142,7 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return tempFolder;
 	}
 
-	private File getOutFileInFolder(File folder) throws IOException {
+	private static File getOutFileInFolder(File folder) throws IOException {
 		File out = File.createTempFile("veraPDF_Jpylyzer_Plugin_out", ".xml", folder);
 		return out;
 	}
@@ -122,5 +174,11 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 	@Override
 	public String getDescription() {
 		return "Extracts features of the Image using Jpylyzer";
+	}
+
+	private static String getSystemIndependentPath(String path) throws URISyntaxException {
+		URL resourceUrl = ClassLoader.class.getResource(path);
+		Path resourcePath = Paths.get(resourceUrl.toURI());
+		return resourcePath.toString();
 	}
 }
