@@ -18,15 +18,18 @@ import java.io.*;
 final class JpylyzerConfig {
 
 	@XmlElement
+	private final String cliPath;
+	@XmlElement
 	private final String outFolder;
 	@XmlElement
 	private final boolean isVerbose;
 
 	private JpylyzerConfig() {
-		this("", false);
+		this("", "", false);
 	}
 
-	private JpylyzerConfig(String outFolder, boolean isVerbose) {
+	private JpylyzerConfig(String outFolder, String cliPath, boolean isVerbose) {
+		this.cliPath = cliPath;
 		this.outFolder = outFolder;
 		this.isVerbose = isVerbose;
 	}
@@ -39,31 +42,37 @@ final class JpylyzerConfig {
 		return isVerbose;
 	}
 
+	public String getCliPath() {
+		return cliPath;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		JpylyzerConfig that = (JpylyzerConfig) o;
+		JpylyzerConfig config = (JpylyzerConfig) o;
 
-		if (isVerbose != that.isVerbose) return false;
-		return outFolder != null ? outFolder.equals(that.outFolder) : that.outFolder == null;
+		if (isVerbose != config.isVerbose) return false;
+		if (cliPath != null ? !cliPath.equals(config.cliPath) : config.cliPath != null) return false;
+		return outFolder != null ? outFolder.equals(config.outFolder) : config.outFolder == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = outFolder != null ? outFolder.hashCode() : 0;
+		int result = cliPath != null ? cliPath.hashCode() : 0;
+		result = 31 * result + (outFolder != null ? outFolder.hashCode() : 0);
 		result = 31 * result + (isVerbose ? 1 : 0);
 		return result;
 	}
 
 	static JpylyzerConfig defaultInstance() {
-		return new JpylyzerConfig(null, false);
+		return new JpylyzerConfig(null, null, false);
 	}
 
-	static JpylyzerConfig fromValues(final String outFolder, final boolean isVerbose) {
-		return new JpylyzerConfig(outFolder, isVerbose);
+	static JpylyzerConfig fromValues(final String cliPath, final String outFolder, final boolean isVerbose) {
+		return new JpylyzerConfig(cliPath, outFolder, isVerbose);
 	}
 
 	static String toXml(final JpylyzerConfig toConvert, Boolean prettyXml)
