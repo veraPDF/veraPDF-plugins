@@ -14,9 +14,16 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtractor {
+    public static final String ID = "ad7c3157-5865-4e8a-8f47-57f81580b612";
+    public static final String DESCRIPTION = "This sample Extractor generates custom features report containing data from incoming " +
+                "ICCProfileFeaturesData object.";
 
-	private static final Logger LOGGER = Logger
-			.getLogger(ICCProfileSampleExtractor.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(ICCProfileSampleExtractor.class);
+
+    public ICCProfileSampleExtractor() {
+        super(ID, DESCRIPTION);
+    }
 
 	@Override
 	public List<FeatureTreeNode> getICCProfileFeatures(ICCProfileFeaturesData iccProfileFeaturesData) {
@@ -63,16 +70,5 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			node.setValue(toAdd.toString());
 		}
 		return node;
-	}
-
-	@Override
-	public String getID() {
-		return "ad7c3157-5865-4e8a-8f47-57f81580b612";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"ICCProfileFeaturesData object.";
 	}
 }

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.verapdf</groupId>
-    <artifactId>verapdf-library-samples</artifactId>
+    <parent>
+        <groupId>org.verapdf</groupId>
+        <artifactId>verapdf-parent</artifactId>
+        <version>1.0.15</version>
+    </parent>
+
+    <groupId>org.verapdf.plugins</groupId>
+    <artifactId>verapdf-plugins</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.15.0-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -20,18 +25,6 @@
         </repository>
     </repositories>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
     <modules>
         <module>fontType-plugin</module>
         <module>iccdump-plugin</module>
@@ -44,27 +37,14 @@
         <module>jpylyzer-plugin</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>vera-dev</id>
-            <name>Vera development</name>
-            <url>http://artifactory.openpreservation.org/artifactory/vera-dev</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.verapdf</groupId>
-            <artifactId>core</artifactId>
-            <version>[0.15.0,0.16.0)</version>
-        </dependency>
-    </dependencies>
-
-    <properties>
-        <java.version>1.7</java.version>
-    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.verapdf</groupId>
+                <artifactId>core</artifactId>
+                <version>[0.15.0,0.16.0)</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

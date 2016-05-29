@@ -15,9 +15,15 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtractor {
+    public static final String ID = "640a9bd1-219f-42db-8d9d-7bd67de48fce";
+    public static final String DESCRIPTION = "This Extractor generates custom features report containing header and information about tags from the iccProfile using the Argyll iccdump command line application.";
 
-	private static final Logger LOGGER = Logger
-			.getLogger(ArgyllICCDumpCLIExtractor.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(ArgyllICCDumpCLIExtractor.class);
+
+    public ArgyllICCDumpCLIExtractor() {
+        super(ID, DESCRIPTION);
+    }
 
 	private File temp;
 
@@ -50,7 +56,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			Runtime rt = Runtime.getRuntime();
-			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", temp.getAbsolutePath()};
+			String[] str = new String[]{"iccdump", "-v", "1", temp.getAbsolutePath()};
 			Process pr = rt.exec(str);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 
@@ -103,10 +109,8 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 	}
 
 	private void generateICCProfile(byte[] icc) {
-		try {
-			FileOutputStream out = new FileOutputStream(this.temp);
+		try (FileOutputStream out = new FileOutputStream(this.temp)){
 			out.write(icc);
-			out.close();
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
@@ -114,16 +118,5 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 
 	private void clean() throws IOException {
 		Files.deleteIfExists(temp.toPath());
-	}
-
-	@Override
-	public String getID() {
-		return "640a9bd1-219f-42db-8d9d-7bd67de48fce";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This Extractor generates custom features report containing header and information about tags from " +
-				"the iccProfile using the Argyll iccdump command line application.";
 	}
 }

@@ -16,8 +16,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +23,12 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
+	public static final String ID = "3ee4e6b3-af6b-4510-8b95-1af29fc81629";
+	public static final String DESCRIPTION = "Extracts features of the Image using Jpylyzer";
+
+	public JpylyzerExtractor() {
+		super(ID, DESCRIPTION);
+	}
 
 	@Override
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
@@ -169,23 +173,13 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 	}
 
 	private File getConfigFile() {
-		return new File(getFolderPath().toFile(), "config.xml");
-	}
-
-	@Override
-	public String getID() {
-		return "3ee4e6b3-af6b-4510-8b95-1af29fc81629";
-	}
-
-	@Override
-	public String getDescription() {
-		return "Extracts features of the Image using Jpylyzer";
+		return new File("config.xml");
 	}
 
 	private String getScriptPath(JpylyzerConfig config) {
 		String cliPath = config.getCliPath();
 		if (cliPath == null) {
-			cliPath = getFolderPath().toString() + "/jpylyzer-master/jpylyzer/jpylyzer.py";
+			cliPath = "/jpylyzer-master/jpylyzer/jpylyzer.py";
 		}
 
 		File cli = new File(cliPath);
