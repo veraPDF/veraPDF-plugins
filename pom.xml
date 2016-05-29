@@ -29,6 +29,7 @@
         <module>imageSample-plugin</module>
         <module>metsMetadata-plugin</module>
         <module>mediaconch</module>
+        <module>jpylyzer-plugin</module>
     </modules>
 
     <repositories>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
-            <version>[0.13.0,0.14.0)</version>
+            <version>[0.15.0,0.16.0)</version>
         </dependency>
     </dependencies>
 
