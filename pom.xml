@@ -27,6 +27,8 @@
         <module>fontSample-plugin</module>
         <module>embeddedfileSample-plugin</module>
         <module>imageSample-plugin</module>
+        <module>metsMetadata-plugin</module>
+        <module>mediaconch</module>
     </modules>
 
     <repositories>
