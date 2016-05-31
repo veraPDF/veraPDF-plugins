@@ -189,5 +189,3 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return cliPath;
 	}
 }
-
-
