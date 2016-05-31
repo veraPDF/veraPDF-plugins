@@ -15,63 +15,69 @@ import java.util.*;
 /**
  * @author Maksim Bezrukov
  */
-public class EmbeddedFileSampleExtractor extends AbstractEmbeddedFileFeaturesExtractor {
+public class EmbeddedFileSampleExtractor extends
+        AbstractEmbeddedFileFeaturesExtractor {
+    public static final String ID = "b99ad964-5d34-4b17-9bec-b19a174ae772";
+    public static final String DESCRIPTION = "This sample Extractor generates custom features report containing data from incoming EmbeddedFileFeaturesData object.";
 
-	private static final Logger LOGGER = Logger
-			.getLogger(EmbeddedFileSampleExtractor.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(EmbeddedFileSampleExtractor.class);
 
-	@Override
-	public List<FeatureTreeNode> getEmbeddedFileFeatures(EmbeddedFileFeaturesData embeddedFileFeaturesData) {
-		List<FeatureTreeNode> res = new ArrayList<>();
-		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(embeddedFileFeaturesData.getStream()));
-			res.add(stream);
-
-			addObjectNode("checkSum", embeddedFileFeaturesData.getCheckSum(), res);
-			addObjectNode("creationDate", getXMLFormat(embeddedFileFeaturesData.getCreationDate()), res);
-			addObjectNode("description", embeddedFileFeaturesData.getDescription(), res);
-			addObjectNode("modDate", getXMLFormat(embeddedFileFeaturesData.getModDate()), res);
-			addObjectNode("name", embeddedFileFeaturesData.getName(), res);
-			addObjectNode("size", embeddedFileFeaturesData.getSize(), res);
-			addObjectNode("subtype", embeddedFileFeaturesData.getSubtype(), res);
-
-		} catch (FeatureParsingException | DatatypeConfigurationException e) {
-			LOGGER.error(e);
-		}
-		return res;
+    public EmbeddedFileSampleExtractor() {
+	    super(ID, DESCRIPTION);
 	}
 
-	private static FeatureTreeNode addObjectNode(String nodeName, Object toAdd, List<FeatureTreeNode> list) throws FeatureParsingException {
-		FeatureTreeNode node = null;
-		if (toAdd != null) {
-			node = FeatureTreeNode.createRootNode(nodeName);
-			list.add(node);
-			node.setValue(toAdd.toString());
-		}
-		return node;
-	}
+    @Override
+    public List<FeatureTreeNode> getEmbeddedFileFeatures(
+            EmbeddedFileFeaturesData embeddedFileFeaturesData) {
+        List<FeatureTreeNode> res = new ArrayList<>();
+        try {
+            FeatureTreeNode stream = FeatureTreeNode
+                    .createRootNode("streamContent");
+            stream.setValue(DatatypeConverter
+                    .printHexBinary(embeddedFileFeaturesData.getStream()));
+            res.add(stream);
 
-	private static String getXMLFormat(Calendar calendar) throws DatatypeConfigurationException {
-		if (calendar == null) {
-			return null;
-		}
-		GregorianCalendar greg = new GregorianCalendar(Locale.US);
-		greg.setTime(calendar.getTime());
-		greg.setTimeZone(calendar.getTimeZone());
-		XMLGregorianCalendar xmlCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(greg);
-		return xmlCalendar.toXMLFormat();
+            addObjectNode("checkSum", embeddedFileFeaturesData.getCheckSum(),
+                    res);
+            addObjectNode("creationDate",
+                    formatXMLDate(embeddedFileFeaturesData.getCreationDate()),
+                    res);
+            addObjectNode("description",
+                    embeddedFileFeaturesData.getDescription(), res);
+            addObjectNode("modDate",
+                    formatXMLDate(embeddedFileFeaturesData.getModDate()), res);
+            addObjectNode("name", embeddedFileFeaturesData.getName(), res);
+            addObjectNode("size", embeddedFileFeaturesData.getSize(), res);
+            addObjectNode("subtype", embeddedFileFeaturesData.getSubtype(), res);
 
-	}
+        } catch (FeatureParsingException | DatatypeConfigurationException e) {
+            LOGGER.error(e);
+        }
+        return res;
+    }
 
-	@Override
-	public String getID() {
-		return "b99ad964-5d34-4b17-9bec-b19a174ae772";
-	}
+    private static void addObjectNode(String nodeName, Object toAdd,
+            List<FeatureTreeNode> list) throws FeatureParsingException {
+        if (toAdd != null) {
+            FeatureTreeNode node = FeatureTreeNode.createRootNode(nodeName);
+            node.setValue(toAdd.toString());
+            list.add(node);
+        }
+    }
 
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"EmbeddedFileFeaturesData object.";
-	}
+    private static String formatXMLDate(Calendar calendar)
+            throws DatatypeConfigurationException {
+        if (calendar == null) {
+            return null;
+        }
+        GregorianCalendar greg = new GregorianCalendar(Locale.US);
+        greg.setTime(calendar.getTime());
+        greg.setTimeZone(calendar.getTimeZone());
+        XMLGregorianCalendar xmlCalendar = DatatypeFactory.newInstance()
+                .newXMLGregorianCalendar(greg);
+        return xmlCalendar.toXMLFormat();
+
+    }
+
 }

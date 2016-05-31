@@ -15,8 +15,15 @@ import java.util.List;
  */
 public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(FontSampleExtractor.class);
+    public static final String ID = "8b06613d-b5d0-47b5-a7e6-4900cea4823c";
+    public static final String DESCRIPTION = "This sample Extractor generates custom features report containing data from incoming FontFeaturesData object.";
+
+    private static final Logger LOGGER = Logger
+            .getLogger(FontSampleExtractor.class);
+
+    public FontSampleExtractor() {
+        super(ID, DESCRIPTION);
+    }
 
 	@Override
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
@@ -80,16 +87,5 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			node.setValue(toAdd.toString());
 		}
 		return node;
-	}
-
-	@Override
-	public String getID() {
-		return "8b06613d-b5d0-47b5-a7e6-4900cea4823c";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"FontFeaturesData object.";
 	}
 }

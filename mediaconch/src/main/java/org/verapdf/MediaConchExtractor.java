@@ -13,6 +13,12 @@ import java.util.*;
  * @author Maksim Bezrukov
  */
 public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
+    private static final String ID = "8725b233-1597-490e-9b45-b989303d2c5b";
+    private static final String DESCRIPTION = "Generates mediaconch report of the given embedded video file";
+
+    public MediaConchExtractor() {
+        super(ID, DESCRIPTION);
+    }
 
     @Override
     public List<FeatureTreeNode> getEmbeddedFileFeatures(EmbeddedFileFeaturesData embeddedFileFeaturesData) {
@@ -47,7 +53,6 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
     }
 
     private void execCLI(List<FeatureTreeNode> nodes, MediaConchConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException {
-        List<FeatureTreeNode> res = new ArrayList<>();
         Runtime rt = Runtime.getRuntime();
         String cliPath;
         String configCliPath = config.getCliPath();
@@ -62,8 +67,7 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
         FileOutputStream outStream = new FileOutputStream(out);
         byte[] buffer = new byte[1024];
         int bytesRead;
-        while ((bytesRead = pr.getInputStream().read(buffer)) != -1)
-        {
+        while ((bytesRead = pr.getInputStream().read(buffer)) != -1) {
             outStream.write(buffer, 0, bytesRead);
         }
         pr.waitFor();
@@ -75,21 +79,16 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
 
     private File getOutFile(MediaConchConfig config, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
         if (config.getOutFolder() == null) {
-            File tempFolder = getTempFolder();
-            File res = getOutFileInFolder(tempFolder);
-            return res;
+            return getOutFileInFolder(getTempFolder());
         } else {
             File outFolder = new File(config.getOutFolder());
             if (outFolder.isDirectory()) {
-                File res = getOutFileInFolder(outFolder);
-                return res;
+                return getOutFileInFolder(outFolder);
             } else {
                 FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
                 node.setValue("Config file contains out folder path but it doesn't link a directory.");
                 nodes.add(node);
-                File tempFolder = getTempFolder();
-                File res = getOutFileInFolder(tempFolder);
-                return res;
+                return getOutFileInFolder(getTempFolder());
             }
         }
     }
@@ -104,8 +103,7 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
     }
 
     private File getOutFileInFolder(File folder) throws IOException {
-        File out = File.createTempFile("veraPDF_MediaConch_Plugin_out", ".xml", folder);
-        return out;
+        return File.createTempFile("veraPDF_MediaConch_Plugin_out", ".xml", folder);
     }
 
     private MediaConchConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
@@ -124,21 +122,12 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
     }
 
     private File getConfigFile() {
-        return new File(getFolderPath().toFile(), "config.xml");
+        return new File("config.xml");
     }
 
     private boolean isValidType(String type) {
         return type.toLowerCase().startsWith("video/");
     }
 
-    @Override
-    public String getID() {
-        return "8725b233-1597-490e-9b45-b989303d2c5b";
-    }
-
-    @Override
-    public String getDescription() {
-        //TODO: check this description
-        return "Generates mediaconch report of the given embedded video file";
-    }
 }
+

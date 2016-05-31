@@ -221,21 +221,16 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
     private File getOutFile(List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
         METSConfig config = getConfig(nodes);
         if (config.getOutFolder() == null) {
-            File tempFolder = getTempFolder();
-            File res = getOutFileInFolder(tempFolder);
-            return res;
+            return getOutFileInFolder(getTempFolder());
         } else {
             File outFolder = new File(config.getOutFolder());
             if (outFolder.isDirectory()) {
-                File res = getOutFileInFolder(outFolder);
-                return res;
+                return getOutFileInFolder(outFolder);
             } else {
                 FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
                 node.setValue("Config file contains out folder path but it doesn't link a directory.");
                 nodes.add(node);
-                File tempFolder = getTempFolder();
-                File res = getOutFileInFolder(tempFolder);
-                return res;
+                return getOutFileInFolder(getTempFolder());
             }
         }
     }

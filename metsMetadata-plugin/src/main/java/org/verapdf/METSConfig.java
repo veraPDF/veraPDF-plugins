@@ -97,8 +97,7 @@ final class METSConfig {
     private static Unmarshaller getUnmarshaller() throws JAXBException {
         JAXBContext context = JAXBContext
                 .newInstance(METSConfig.class);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        return unmarshaller;
+        return context.createUnmarshaller();
     }
 
     private static Marshaller getMarshaller(Boolean setPretty)

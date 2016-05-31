@@ -15,9 +15,16 @@ import java.util.Map;
  * @author Maksim Bezrukov
  */
 public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
+    public static final String ID = "163e5726-3c5a-4701-abdc-428005c8c39d";
+    public static final String DESCRIPTION = "This sample Extractor generates custom features report containing data from incoming " +
+                "ImageFeaturesData object.";
 
-	private static final Logger LOGGER = Logger
-			.getLogger(ImageSampleExtractor.class);
+    private static final Logger LOGGER = Logger
+            .getLogger(ImageSampleExtractor.class);
+
+    public ImageSampleExtractor() {
+        super(ID, DESCRIPTION);
+    }
 
 	@Override
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
@@ -74,16 +81,5 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 			node.setValue(toAdd.toString());
 		}
 		return node;
-	}
-
-	@Override
-	public String getID() {
-		return "163e5726-3c5a-4701-abdc-428005c8c39d";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"ImageFeaturesData object.";
 	}
 }
