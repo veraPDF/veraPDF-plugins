@@ -35,6 +35,7 @@
         <module>metsMetadata-plugin</module>
         <module>mediaconch</module>
         <module>jpylyzer-plugin</module>
+        <module>ots-plugin</module>
     </modules>
 
     <dependencyManagement>
