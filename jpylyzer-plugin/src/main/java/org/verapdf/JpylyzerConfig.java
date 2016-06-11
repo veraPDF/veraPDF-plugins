@@ -28,7 +28,7 @@ final class JpylyzerConfig {
 		this("", "", false);
 	}
 
-	private JpylyzerConfig(String outFolder, String cliPath, boolean isVerbose) {
+	private JpylyzerConfig(String cliPath, String outFolder, boolean isVerbose) {
 		this.cliPath = cliPath;
 		this.outFolder = outFolder;
 		this.isVerbose = isVerbose;
