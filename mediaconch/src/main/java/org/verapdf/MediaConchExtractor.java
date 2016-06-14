@@ -122,7 +122,7 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
     }
 
     private File getConfigFile() {
-        return new File("config.xml");
+        return new File(getFolderPath().toFile(), "config.xml");
     }
 
     private boolean isValidType(String type) {

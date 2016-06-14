@@ -56,7 +56,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			Runtime rt = Runtime.getRuntime();
-			String[] str = new String[]{"iccdump", "-v", "1", temp.getAbsolutePath()};
+			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", temp.getAbsolutePath()};
 			Process pr = rt.exec(str);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 

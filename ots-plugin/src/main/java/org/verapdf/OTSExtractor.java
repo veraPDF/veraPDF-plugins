@@ -112,13 +112,13 @@ public class OTSExtractor extends AbstractFontFeaturesExtractor {
 	}
 
 	private File getConfigFile() {
-		return new File("config.xml");
+		return new File(getFolderPath().toFile(), "config.xml");
 	}
 
 	private String getExecutablePath(OTSConfig config) {
 		String cliPath = config.getCliPath();
 		if (cliPath == null) {
-			cliPath = "/ots/ot-sanitise";
+			cliPath = getFolderPath().toString() + "/ots/ot-sanitise";
 		}
 
 		File cli = new File(cliPath);
