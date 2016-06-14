@@ -173,13 +173,13 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 	}
 
 	private File getConfigFile() {
-		return new File("config.xml");
+		return new File(getFolderPath().toFile(), "config.xml");
 	}
 
 	private String getScriptPath(JpylyzerConfig config) {
 		String cliPath = config.getCliPath();
 		if (cliPath == null) {
-			cliPath = "/jpylyzer-master/jpylyzer/jpylyzer.py";
+			cliPath = getFolderPath().toString() + "/jpylyzer-master/jpylyzer/jpylyzer.py";
 		}
 
 		File cli = new File(cliPath);

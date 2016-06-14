@@ -14,32 +14,18 @@ import java.io.*;
 /**
  * @author Maksim Bezrukov
  */
-@XmlRootElement(namespace = "http://www.verapdf.org/JpylyzerConfig", name = "jpylyzerConfig")
-final class JpylyzerConfig {
+@XmlRootElement(namespace = "http://www.verapdf.org/OTSConfig", name = "otsConfig")
+final class OTSConfig {
 
 	@XmlElement
 	private final String cliPath;
-	@XmlElement
-	private final String outFolder;
-	@XmlElement
-	private final boolean isVerbose;
 
-	private JpylyzerConfig() {
-		this("", "", false);
+	private OTSConfig() {
+		this("");
 	}
 
-	private JpylyzerConfig(String cliPath, String outFolder, boolean isVerbose) {
+	private OTSConfig(String cliPath) {
 		this.cliPath = cliPath;
-		this.outFolder = outFolder;
-		this.isVerbose = isVerbose;
-	}
-
-	public String getOutFolder() {
-		return outFolder;
-	}
-
-	public boolean isVerbose() {
-		return isVerbose;
 	}
 
 	public String getCliPath() {
@@ -51,31 +37,26 @@ final class JpylyzerConfig {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		JpylyzerConfig config = (JpylyzerConfig) o;
+		OTSConfig otsConfig = (OTSConfig) o;
 
-		if (isVerbose != config.isVerbose) return false;
-		if (cliPath != null ? !cliPath.equals(config.cliPath) : config.cliPath != null) return false;
-		return outFolder != null ? outFolder.equals(config.outFolder) : config.outFolder == null;
+		return cliPath != null ? cliPath.equals(otsConfig.cliPath) : otsConfig.cliPath == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = cliPath != null ? cliPath.hashCode() : 0;
-		result = 31 * result + (outFolder != null ? outFolder.hashCode() : 0);
-		result = 31 * result + (isVerbose ? 1 : 0);
-		return result;
+		return cliPath != null ? cliPath.hashCode() : 0;
 	}
 
-	static JpylyzerConfig defaultInstance() {
-		return new JpylyzerConfig(null, null, false);
+	static OTSConfig defaultInstance() {
+		return new OTSConfig(null);
 	}
 
-	static JpylyzerConfig fromValues(final String cliPath, final String outFolder, final boolean isVerbose) {
-		return new JpylyzerConfig(cliPath, outFolder, isVerbose);
+	static OTSConfig fromValues(final String cliPath) {
+		return new OTSConfig(cliPath);
 	}
 
-	static String toXml(final JpylyzerConfig toConvert, Boolean prettyXml)
+	static String toXml(final OTSConfig toConvert, Boolean prettyXml)
 			throws JAXBException, IOException {
 		String retVal = "";
 		try (StringWriter writer = new StringWriter()) {
@@ -85,47 +66,47 @@ final class JpylyzerConfig {
 		}
 	}
 
-	static JpylyzerConfig fromXml(final String toConvert)
+	static OTSConfig fromXml(final String toConvert)
 			throws JAXBException {
 		try (StringReader reader = new StringReader(toConvert)) {
 			return fromXml(reader);
 		}
 	}
 
-	static void toXml(final JpylyzerConfig toConvert,
+	static void toXml(final OTSConfig toConvert,
 					  final OutputStream stream, Boolean prettyXml) throws JAXBException {
 		Marshaller varMarshaller = getMarshaller(prettyXml);
 		varMarshaller.marshal(toConvert, stream);
 	}
 
-	static JpylyzerConfig fromXml(final InputStream toConvert)
+	static OTSConfig fromXml(final InputStream toConvert)
 			throws JAXBException {
 		Unmarshaller stringUnmarshaller = getUnmarshaller();
-		return (JpylyzerConfig) stringUnmarshaller.unmarshal(toConvert);
+		return (OTSConfig) stringUnmarshaller.unmarshal(toConvert);
 	}
 
-	static void toXml(final JpylyzerConfig toConvert, final Writer writer,
+	static void toXml(final OTSConfig toConvert, final Writer writer,
 					  Boolean prettyXml) throws JAXBException {
 		Marshaller varMarshaller = getMarshaller(prettyXml);
 		varMarshaller.marshal(toConvert, writer);
 	}
 
-	static JpylyzerConfig fromXml(final Reader toConvert)
+	static OTSConfig fromXml(final Reader toConvert)
 			throws JAXBException {
 		Unmarshaller stringUnmarshaller = getUnmarshaller();
-		return (JpylyzerConfig) stringUnmarshaller.unmarshal(toConvert);
+		return (OTSConfig) stringUnmarshaller.unmarshal(toConvert);
 	}
 
 	private static Unmarshaller getUnmarshaller() throws JAXBException {
 		JAXBContext context = JAXBContext
-				.newInstance(JpylyzerConfig.class);
+				.newInstance(OTSConfig.class);
 		return context.createUnmarshaller();
 	}
 
 	private static Marshaller getMarshaller(Boolean setPretty)
 			throws JAXBException {
 		JAXBContext context = JAXBContext
-				.newInstance(JpylyzerConfig.class);
+				.newInstance(OTSConfig.class);
 		Marshaller marshaller = context.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, setPretty);
 		return marshaller;
