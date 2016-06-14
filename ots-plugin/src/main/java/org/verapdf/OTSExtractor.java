@@ -59,35 +59,36 @@ public class OTSExtractor extends AbstractFontFeaturesExtractor {
 			nodes.add(error);
 			return;
 		}
-		String[] args = new String[]{exePath, temp.getCanonicalPath()};
+		String[] args = new String[]{exePath, temp.getAbsolutePath()};
 
 		Runtime rt = Runtime.getRuntime();
 		Process pr = rt.exec(args);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
 
 		StringBuilder builder = new StringBuilder("");
 		String line = reader.readLine();
 		while (line != null) {
-			builder.append(line);
+			builder.append(line + "\n");
 			line = reader.readLine();
 		}
 		pr.waitFor();
 
-		boolean isValid = builder.toString().isEmpty();
+		String output = builder.toString();
+		boolean isValid = output.isEmpty();
 		FeatureTreeNode valid = FeatureTreeNode.createRootNode("isValid");
 		valid.setValue(Boolean.toString(isValid));
 		nodes.add(valid);
 
 		if (!isValid) {
 			FeatureTreeNode res = FeatureTreeNode.createRootNode("otsOutput");
-			res.setValue(builder.toString());
+			res.setValue(output.substring(0, output.length()-1));
 			nodes.add(res);
 		}
 	}
 
 	private static File getTempFolder() {
 		File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		File tempFolder = new File(tempDir, "veraPDFJpylyzerPluginTemp");
+		File tempFolder = new File(tempDir, "veraPDFOTSPluginTemp");
 		if (!tempFolder.exists()) {
 			tempFolder.mkdir();
 		}
