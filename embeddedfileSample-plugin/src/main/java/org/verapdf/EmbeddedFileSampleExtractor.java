@@ -17,15 +17,9 @@ import java.util.*;
  */
 public class EmbeddedFileSampleExtractor extends
         AbstractEmbeddedFileFeaturesExtractor {
-    public static final String ID = "b99ad964-5d34-4b17-9bec-b19a174ae772";
-    public static final String DESCRIPTION = "This sample Extractor generates custom features report containing data from incoming EmbeddedFileFeaturesData object.";
 
     private static final Logger LOGGER = Logger
             .getLogger(EmbeddedFileSampleExtractor.class);
-
-    public EmbeddedFileSampleExtractor() {
-	    super(ID, DESCRIPTION);
-	}
 
     @Override
     public List<FeatureTreeNode> getEmbeddedFileFeatures(

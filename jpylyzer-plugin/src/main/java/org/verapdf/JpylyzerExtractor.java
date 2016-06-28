@@ -23,12 +23,6 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
-	public static final String ID = "3ee4e6b3-af6b-4510-8b95-1af29fc81629";
-	public static final String DESCRIPTION = "Extracts features of the Image using Jpylyzer";
-
-	public JpylyzerExtractor() {
-		super(ID, DESCRIPTION);
-	}
 
 	@Override
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
@@ -45,9 +39,8 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		List<FeatureTreeNode> result = new ArrayList<>();
 		try {
 			try {
-				JpylyzerConfig config = getConfig(result);
 				File temp = generateTempFile(imageFeaturesData.getStream(), "jpx");
-				exec(result, config, temp);
+				exec(result, temp);
 			} catch (IOException | InterruptedException | URISyntaxException e) {
 				FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
 				node.setValue("Error in execution. Error message: " + e.getMessage());
@@ -69,8 +62,8 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return temp;
 	}
 
-	private void exec(List<FeatureTreeNode> nodes, JpylyzerConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException, URISyntaxException {
-		String scriptPath = getScriptPath(config);
+	private void exec(List<FeatureTreeNode> nodes, File temp) throws InterruptedException, FeatureParsingException, IOException, URISyntaxException {
+		String scriptPath = getAttributes().get("cliPath");
 		if (scriptPath == null) {
 			FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
 			error.setValue("Can not obtain jpylyzer script or binary");
@@ -78,7 +71,8 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 			return;
 		}
 		String[] args;
-		if (config.isVerbose()) {
+		String isVerbose = getAttributes().get("isVerbose");
+		if (isVerbose != null && Boolean.valueOf(isVerbose)) {
 			args = new String[3];
 			args[0] = scriptPath;
 			args[1] = "--verbose";
@@ -90,7 +84,7 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		}
 		Runtime rt = Runtime.getRuntime();
 		Process pr = rt.exec(args);
-		File out = getOutFile(config, nodes);
+		File out = getOutFile(getAttributes().get("outFolder"), nodes);
 		FileOutputStream outStream = new FileOutputStream(out);
 		byte[] buffer = new byte[1024];
 		int bytesRead;
@@ -123,12 +117,12 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return xp.evaluate(document);
 	}
 
-	private static File getOutFile(JpylyzerConfig config, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
-		if (config.getOutFolder() == null) {
+	private static File getOutFile(String outPath, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
+		if (outPath == null) {
 			File tempFolder = getTempFolder();
 			return getOutFileInFolder(tempFolder);
 		} else {
-			File outFolder = new File(config.getOutFolder());
+			File outFolder = new File(outPath);
 			if (outFolder.isDirectory()) {
 				return getOutFileInFolder(outFolder);
 			} else {
@@ -155,37 +149,5 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		File out = File.createTempFile("veraPDF_Jpylyzer_Plugin_out", ".xml", folder);
 		out.deleteOnExit();
 		return out;
-	}
-
-	private JpylyzerConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
-		JpylyzerConfig config = JpylyzerConfig.defaultInstance();
-		File conf = getConfigFile();
-		if (conf.isFile() && conf.canRead()) {
-			try {
-				config = JpylyzerConfig.fromXml(new FileInputStream(conf));
-			} catch (JAXBException | FileNotFoundException e) {
-				FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
-				node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
-				nodes.add(node);
-			}
-		}
-		return config;
-	}
-
-	private File getConfigFile() {
-		return new File(getFolderPath().toFile(), "config.xml");
-	}
-
-	private String getScriptPath(JpylyzerConfig config) {
-		String cliPath = config.getCliPath();
-		if (cliPath == null) {
-			cliPath = getFolderPath().toString() + "/jpylyzer-master/jpylyzer/jpylyzer.py";
-		}
-
-		File cli = new File(cliPath);
-		if (!(cli.exists() && cli.isFile())) {
-			return null;
-		}
-		return cliPath;
 	}
 }
