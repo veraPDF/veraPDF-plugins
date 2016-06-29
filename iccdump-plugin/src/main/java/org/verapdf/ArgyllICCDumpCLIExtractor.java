@@ -15,15 +15,9 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtractor {
-    public static final String ID = "640a9bd1-219f-42db-8d9d-7bd67de48fce";
-    public static final String DESCRIPTION = "This Extractor generates custom features report containing header and information about tags from the iccProfile using the Argyll iccdump command line application.";
 
     private static final Logger LOGGER = Logger
             .getLogger(ArgyllICCDumpCLIExtractor.class);
-
-    public ArgyllICCDumpCLIExtractor() {
-        super(ID, DESCRIPTION);
-    }
 
 	private File temp;
 
@@ -56,7 +50,14 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			Runtime rt = Runtime.getRuntime();
-			String[] str = new String[]{getFolderPath().toString() + "/iccdump", "-v", "1", temp.getAbsolutePath()};
+			String cliPath = getAttributes().get("cliPath");
+			if (cliPath == null) {
+				FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
+				error.setValue("Can not obtain iccdump path");
+				res.add(error);
+				return res;
+			}
+			String[] str = new String[]{cliPath, "-v", "1", temp.getAbsolutePath()};
 			Process pr = rt.exec(str);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 

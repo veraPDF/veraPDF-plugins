@@ -14,16 +14,9 @@ import java.util.List;
  */
 public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 
-
-    public static final String ID = "f1a805ae-62ae-4520-9d3b-489e5ff4af68";
-    public static final String DESCRIPTION = "This Extractor generates custom features report containing one entry that is the font type read from file.";
-
     private static final Logger LOGGER = Logger
             .getLogger(FontTypeExtractor.class);
 
-    public FontTypeExtractor() {
-        super(ID, DESCRIPTION);
-    }
 	private static final byte[] OPENTYPE_BEGIN = new byte[]{0x4f, 0x54, 0x54, 0x4f};
 	private static final byte[] PS_TYPE1_BEGIN = new byte[]{0x25, 0x21};
 	private static final byte[] TRUE_TYPE_BEGIN = new byte[]{0x00, 0x01, 0x00, 0x00};

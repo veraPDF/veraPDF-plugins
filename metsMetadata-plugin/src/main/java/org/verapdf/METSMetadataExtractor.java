@@ -219,11 +219,11 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
     }
 
     private File getOutFile(List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
-        METSConfig config = getConfig(nodes);
-        if (config.getOutFolder() == null) {
+        String out = getAttributes().get("outFolder");
+        if (out == null) {
             return getOutFileInFolder(getTempFolder());
         } else {
-            File outFolder = new File(config.getOutFolder());
+            File outFolder = new File(out);
             if (outFolder.isDirectory()) {
                 return getOutFileInFolder(outFolder);
             } else {
@@ -246,34 +246,5 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
 
     private File getOutFileInFolder(File folder) throws IOException {
         return File.createTempFile("veraPDF_METS_Plugin_out", ".xml", folder);
-    }
-
-    private METSConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
-        METSConfig config = METSConfig.defaultInstance();
-        File conf = getConfigFile();
-        if (conf.isFile() && conf.canRead()) {
-            try {
-                config = METSConfig.fromXml(new FileInputStream(conf));
-            } catch (JAXBException | FileNotFoundException e) {
-                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
-                node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
-                nodes.add(node);
-            }
-        }
-        return config;
-    }
-
-    private File getConfigFile() {
-        return new File(getFolderPath().toFile(), "config.xml");
-    }
-
-    @Override
-    public String getID() {
-        return "63f0a295-587b-4e50-909c-4b47e02f64f7";
-    }
-
-    @Override
-    public String getDescription() {
-        return "This extractor generates METS file based on XMP package.";
     }
 }

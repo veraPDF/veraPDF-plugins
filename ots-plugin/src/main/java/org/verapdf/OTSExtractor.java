@@ -15,21 +15,14 @@ import java.util.List;
  * @author Maksim Bezrukov
  */
 public class OTSExtractor extends AbstractFontFeaturesExtractor {
-	public static final String ID = "f04e45de-78ff-48e6-8ff9-a0c39ef9e4f9";
-	public static final String DESCRIPTION = "Validates font using OT-Sanitise";
-
-	public OTSExtractor() {
-		super(ID, DESCRIPTION);
-	}
 
 	@Override
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
 		List<FeatureTreeNode> result = new ArrayList<>();
 		try {
 			try {
-				OTSConfig config = getConfig(result);
 				File temp = generateTempFile(fontFeaturesData.getStream(), "fnt");
-				exec(result, config, temp);
+				exec(result, temp);
 			} catch (IOException | InterruptedException | URISyntaxException e) {
 				FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
 				node.setValue("Error in execution. Error message: " + e.getMessage());
@@ -51,8 +44,8 @@ public class OTSExtractor extends AbstractFontFeaturesExtractor {
 		return temp;
 	}
 
-	private void exec(List<FeatureTreeNode> nodes, OTSConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException, URISyntaxException {
-		String exePath = getExecutablePath(config);
+	private void exec(List<FeatureTreeNode> nodes, File temp) throws InterruptedException, FeatureParsingException, IOException, URISyntaxException {
+		String exePath = getAttributes().get("cliPath");
 		if (exePath == null) {
 			FeatureTreeNode error = FeatureTreeNode.createRootNode("error");
 			error.setValue("Can not obtain ot-sanitise binary");
@@ -94,37 +87,5 @@ public class OTSExtractor extends AbstractFontFeaturesExtractor {
 		}
 		tempFolder.deleteOnExit();
 		return tempFolder;
-	}
-
-	private OTSConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
-		OTSConfig config = OTSConfig.defaultInstance();
-		File conf = getConfigFile();
-		if (conf.isFile() && conf.canRead()) {
-			try {
-				config = OTSConfig.fromXml(new FileInputStream(conf));
-			} catch (JAXBException | FileNotFoundException e) {
-				FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
-				node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
-				nodes.add(node);
-			}
-		}
-		return config;
-	}
-
-	private File getConfigFile() {
-		return new File(getFolderPath().toFile(), "config.xml");
-	}
-
-	private String getExecutablePath(OTSConfig config) {
-		String cliPath = config.getCliPath();
-		if (cliPath == null) {
-			cliPath = getFolderPath().toString() + "/ots/ot-sanitise";
-		}
-
-		File cli = new File(cliPath);
-		if (!(cli.exists() && cli.isFile())) {
-			return null;
-		}
-		return cliPath;
 	}
 }

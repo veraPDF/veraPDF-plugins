@@ -13,12 +13,6 @@ import java.util.*;
  * @author Maksim Bezrukov
  */
 public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
-    private static final String ID = "8725b233-1597-490e-9b45-b989303d2c5b";
-    private static final String DESCRIPTION = "Generates mediaconch report of the given embedded video file";
-
-    public MediaConchExtractor() {
-        super(ID, DESCRIPTION);
-    }
 
     @Override
     public List<FeatureTreeNode> getEmbeddedFileFeatures(EmbeddedFileFeaturesData embeddedFileFeaturesData) {
@@ -28,9 +22,8 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
         List<FeatureTreeNode> result = new ArrayList<>();
         try {
             try {
-                MediaConchConfig config = getConfig(result);
                 File temp = generateTempFile(embeddedFileFeaturesData.getStream(), embeddedFileFeaturesData.getName());
-                execCLI(result, config, temp);
+                execCLI(result, temp);
             } catch (IOException | InterruptedException e) {
                 FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
                 node.setValue("Error in execution. Error message: " + e.getMessage());
@@ -52,16 +45,16 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
         return temp;
     }
 
-    private void execCLI(List<FeatureTreeNode> nodes, MediaConchConfig config, File temp) throws InterruptedException, FeatureParsingException, IOException {
+    private void execCLI(List<FeatureTreeNode> nodes, File temp) throws InterruptedException, FeatureParsingException, IOException {
         Runtime rt = Runtime.getRuntime();
         String cliPath;
-        String configCliPath = config.getCliPath();
+        String configCliPath = getAttributes().get("cliPath");
         if (configCliPath == null || configCliPath.isEmpty()) {
             cliPath = "mediaconch";
         } else {
             cliPath = configCliPath;
         }
-        File out = getOutFile(config, nodes);
+        File out = getOutFile(getAttributes().get("outFolder"), nodes);
         String[] str = new String[]{cliPath, "-mc", "-fx", temp.getCanonicalPath()};
         Process pr = rt.exec(str);
         FileOutputStream outStream = new FileOutputStream(out);
@@ -77,11 +70,11 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
 
     }
 
-    private File getOutFile(MediaConchConfig config, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
-        if (config.getOutFolder() == null) {
+    private File getOutFile(String outFolderPath, List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
+        if (outFolderPath == null) {
             return getOutFileInFolder(getTempFolder());
         } else {
-            File outFolder = new File(config.getOutFolder());
+            File outFolder = new File(outFolderPath);
             if (outFolder.isDirectory()) {
                 return getOutFileInFolder(outFolder);
             } else {
@@ -104,25 +97,6 @@ public class MediaConchExtractor extends AbstractEmbeddedFileFeaturesExtractor {
 
     private File getOutFileInFolder(File folder) throws IOException {
         return File.createTempFile("veraPDF_MediaConch_Plugin_out", ".xml", folder);
-    }
-
-    private MediaConchConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
-        MediaConchConfig config = MediaConchConfig.defaultInstance();
-        File conf = getConfigFile();
-        if (conf.isFile() && conf.canRead()) {
-            try {
-                config = MediaConchConfig.fromXml(new FileInputStream(conf));
-            } catch (JAXBException | FileNotFoundException e) {
-                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
-                node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
-                nodes.add(node);
-            }
-        }
-        return config;
-    }
-
-    private File getConfigFile() {
-        return new File(getFolderPath().toFile(), "config.xml");
     }
 
     private boolean isValidType(String type) {
