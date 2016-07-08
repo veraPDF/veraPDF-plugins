@@ -7,6 +7,9 @@ import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +27,13 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(imageFeaturesData.getStream()));
+			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(imageFeaturesData.getStream())));
 			res.add(stream);
 
-			byte[] meta = imageFeaturesData.getMetadata();
+			InputStream meta = imageFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(meta)));
 				res.add(metadata);
 			}
 
@@ -52,15 +55,15 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 					}
 
 					//Special case for JBIG2Decode filter
-					byte[] streamF = filter.getStream();
+					InputStream streamF = filter.getStream();
 					if (streamF != null) {
-						String streamContent = DatatypeConverter.printHexBinary(streamF);
+						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
 						FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
 					}
 				}
 			}
 
-		} catch (FeatureParsingException e) {
+		} catch (FeatureParsingException | IOException e) {
 			LOGGER.error("Some fail in logic", e);
 		}
 		return res;
@@ -74,5 +77,15 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 			node.setValue(toAdd.toString());
 		}
 		return node;
+	}
+
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }

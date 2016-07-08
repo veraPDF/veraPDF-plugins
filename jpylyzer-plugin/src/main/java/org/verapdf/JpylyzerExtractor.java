@@ -52,12 +52,16 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		return result;
 	}
 
-	private File generateTempFile(byte[] stream, String name) throws IOException {
+	private File generateTempFile(InputStream stream, String name) throws IOException {
 		File fold = getTempFolder();
 		File temp = File.createTempFile(name == null ? "" : name, "", fold);
 		temp.deleteOnExit();
 		FileOutputStream out = new FileOutputStream(temp);
-		out.write(stream);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = stream.read(bytes)) != -1) {
+			out.write(bytes, 0, length);
+		}
 		out.close();
 		return temp;
 	}

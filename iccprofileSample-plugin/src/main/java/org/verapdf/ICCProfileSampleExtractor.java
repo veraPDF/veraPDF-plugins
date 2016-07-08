@@ -7,6 +7,9 @@ import org.verapdf.features.ICCProfileFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +26,13 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(iccProfileFeaturesData.getStream()));
+			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(iccProfileFeaturesData.getStream())));
 			res.add(stream);
 
-			byte[] meta = iccProfileFeaturesData.getMetadata();
+			InputStream meta = iccProfileFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(meta)));
 				res.add(metadata);
 			}
 
@@ -49,7 +52,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 				}
 			}
 
-		} catch (FeatureParsingException e) {
+		} catch (FeatureParsingException | IOException e) {
 			LOGGER.error("Some fail in logic", e);
 		}
 		return res;
@@ -63,5 +66,15 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			node.setValue(toAdd.toString());
 		}
 		return node;
+	}
+
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }

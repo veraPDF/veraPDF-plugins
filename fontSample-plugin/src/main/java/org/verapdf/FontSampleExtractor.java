@@ -7,6 +7,9 @@ import org.verapdf.features.FontFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +26,10 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
 			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(fontFeaturesData.getStream()));
+			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(fontFeaturesData.getStream())));
 			res.add(stream);
 
-			byte[] meta = fontFeaturesData.getMetadata();
+			byte[] meta = inputStreamToByteArray(fontFeaturesData.getMetadata());
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
 				metadata.setValue(DatatypeConverter.printHexBinary(meta));
@@ -68,6 +71,8 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 
 		} catch (FeatureParsingException e) {
 			LOGGER.error("Some fail in logic", e);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return res;
 	}
@@ -80,5 +85,15 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			node.setValue(toAdd.toString());
 		}
 		return node;
+	}
+
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }
