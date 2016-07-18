@@ -10,6 +10,9 @@ import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -29,7 +32,7 @@ public class EmbeddedFileSampleExtractor extends
             FeatureTreeNode stream = FeatureTreeNode
                     .createRootNode("streamContent");
             stream.setValue(DatatypeConverter
-                    .printHexBinary(embeddedFileFeaturesData.getStream()));
+                    .printHexBinary(inputStreamToByteArray(embeddedFileFeaturesData.getStream())));
             res.add(stream);
 
             addObjectNode("checkSum", embeddedFileFeaturesData.getCheckSum(),
@@ -45,7 +48,7 @@ public class EmbeddedFileSampleExtractor extends
             addObjectNode("size", embeddedFileFeaturesData.getSize(), res);
             addObjectNode("subtype", embeddedFileFeaturesData.getSubtype(), res);
 
-        } catch (FeatureParsingException | DatatypeConfigurationException e) {
+        } catch (IOException | FeatureParsingException | DatatypeConfigurationException e) {
             LOGGER.error(e);
         }
         return res;
@@ -74,4 +77,13 @@ public class EmbeddedFileSampleExtractor extends
 
     }
 
+    private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = is.read(bytes)) != -1) {
+            baos.write(bytes, 0, length);
+        }
+        return baos.toByteArray();
+    }
 }

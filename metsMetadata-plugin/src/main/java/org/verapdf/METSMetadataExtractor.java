@@ -39,8 +39,7 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         List<FeatureTreeNode> result = new ArrayList<>(1);
         try {
             File outFile = getOutFile(result);
-            byte[] bytes = metadataFeaturesData.getStream();
-            convertXMPToMETS(new ByteArrayInputStream(bytes), new FileOutputStream(outFile));
+            convertXMPToMETS(metadataFeaturesData.getStream(), new FileOutputStream(outFile));
             FeatureTreeNode node = FeatureTreeNode.createRootNode("resultFile");
             node.setValue(outFile.getCanonicalPath());
             result.add(node);

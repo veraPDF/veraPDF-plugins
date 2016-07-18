@@ -109,9 +109,13 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		return res;
 	}
 
-	private void generateICCProfile(byte[] icc) {
+	private void generateICCProfile(InputStream icc) {
 		try (FileOutputStream out = new FileOutputStream(this.temp)){
-			out.write(icc);
+			byte[] bytes = new byte[1024];
+			int length;
+			while ((length = icc.read(bytes)) != -1) {
+				out.write(bytes, 0, length);
+			}
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
