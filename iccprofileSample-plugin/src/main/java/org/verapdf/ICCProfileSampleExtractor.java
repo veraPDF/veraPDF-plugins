@@ -1,25 +1,26 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
-import org.verapdf.core.FeatureParsingException;
-import org.verapdf.features.AbstractICCProfileFeaturesExtractor;
-import org.verapdf.features.ICCProfileFeaturesData;
-import org.verapdf.features.tools.FeatureTreeNode;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.verapdf.core.FeatureParsingException;
+import org.verapdf.features.AbstractICCProfileFeaturesExtractor;
+import org.verapdf.features.ICCProfileFeaturesData;
+import org.verapdf.features.tools.FeatureTreeNode;
 
 /**
  * @author Maksim Bezrukov
  */
 public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ICCProfileSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(ICCProfileSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getICCProfileFeatures(ICCProfileFeaturesData iccProfileFeaturesData) {
@@ -53,7 +54,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 			}
 
 		} catch (FeatureParsingException | IOException e) {
-			LOGGER.error("Some fail in logic", e);
+			LOGGER.log(Level.WARNING, "Some failure in ICC scampler", e);
 		}
 		return res;
 	}

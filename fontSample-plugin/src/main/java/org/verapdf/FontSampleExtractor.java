@@ -1,6 +1,5 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractFontFeaturesExtractor;
 import org.verapdf.features.FontFeaturesData;
@@ -12,14 +11,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(FontSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(FontSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
@@ -70,7 +70,7 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			addObjectNode("xHeight", fontFeaturesData.getXHeight(), res);
 
 		} catch (FeatureParsingException e) {
-			LOGGER.error("Some fail in logic", e);
+			LOGGER.log(Level.WARNING, "Some fail in logic", e);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
