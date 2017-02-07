@@ -50,7 +50,7 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 				for (int i = 0; i < bbox.size(); ++i) {
 					Double obj = bbox.get(i);
 					if (obj != null) {
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+						FeatureTreeNode entry = rangeNode.addChild("entry");
 						entry.setValue(obj.toString());
 						entry.setAttribute("index", String.valueOf(i));
 					}
