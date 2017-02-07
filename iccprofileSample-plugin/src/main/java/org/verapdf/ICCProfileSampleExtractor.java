@@ -46,7 +46,7 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 				for (int i = 0; i < range.size(); ++i) {
 					Double obj = range.get(i);
 					if (obj != null) {
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+						FeatureTreeNode entry = rangeNode.addChild("entry");
 						entry.setValue(obj.toString());
 						entry.setAttribute("index", String.valueOf(i));
 					}

@@ -45,12 +45,12 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 				FeatureTreeNode filtersNode = FeatureTreeNode.createRootNode("filters");
 				res.add(filtersNode);
 				for (ImageFeaturesData.Filter filter : filters) {
-					FeatureTreeNode filterNode = FeatureTreeNode.createChildNode("filter", filtersNode);
+					FeatureTreeNode filterNode = filtersNode.addChild("filter");
 					filterNode.setAttribute("name", String.valueOf(filter.getName()));
 					Map<String, String> properties = filter.getProperties();
 					if (properties != null) {
 						for (Map.Entry entry : properties.entrySet()) {
-							FeatureTreeNode.createChildNode(String.valueOf(entry.getKey()), filterNode).setValue(String.valueOf(entry.getValue()));
+							filterNode.addChild(String.valueOf(entry.getKey())).setValue(String.valueOf(entry.getValue()));
 						}
 					}
 
@@ -58,7 +58,7 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 					InputStream streamF = filter.getStream();
 					if (streamF != null) {
 						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
-						FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
+						filterNode.addChild("stream").setValue(streamContent);
 					}
 				}
 			}

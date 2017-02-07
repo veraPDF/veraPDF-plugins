@@ -71,7 +71,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 						int eqind = line.indexOf("=");
 						String name = line.substring(0, eqind).trim();
 						String value = line.substring(eqind + 1).trim();
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("headerEntry", header);
+						FeatureTreeNode entry = header.addChild("headerEntry");
 						entry.setAttribute("name", name);
 						entry.setAttribute("value", value);
 						line = reader.readLine();
@@ -86,7 +86,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 						int spind = line.trim().indexOf(" ");
 						String name = line.trim().substring(0, spind);
 						String value = line.trim().substring(spind).trim();
-						FeatureTreeNode.createChildNode(name, tag).setValue(value);
+						tag.addChild(name).setValue(value);
 						line = reader.readLine();
 					}
 					res.add(tag);
