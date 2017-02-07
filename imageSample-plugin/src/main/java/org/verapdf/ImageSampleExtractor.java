@@ -1,6 +1,5 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractImageFeaturesExtractor;
 import org.verapdf.features.ImageFeaturesData;
@@ -13,14 +12,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ImageSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(ImageSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
@@ -45,12 +45,12 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 				FeatureTreeNode filtersNode = FeatureTreeNode.createRootNode("filters");
 				res.add(filtersNode);
 				for (ImageFeaturesData.Filter filter : filters) {
-					FeatureTreeNode filterNode = FeatureTreeNode.createChildNode("filter", filtersNode);
+					FeatureTreeNode filterNode = filtersNode.addChild("filter");
 					filterNode.setAttribute("name", String.valueOf(filter.getName()));
 					Map<String, String> properties = filter.getProperties();
 					if (properties != null) {
 						for (Map.Entry entry : properties.entrySet()) {
-							FeatureTreeNode.createChildNode(String.valueOf(entry.getKey()), filterNode).setValue(String.valueOf(entry.getValue()));
+							filterNode.addChild(String.valueOf(entry.getKey())).setValue(String.valueOf(entry.getValue()));
 						}
 					}
 
@@ -58,13 +58,13 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 					InputStream streamF = filter.getStream();
 					if (streamF != null) {
 						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
-						FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
+						filterNode.addChild("stream").setValue(streamContent);
 					}
 				}
 			}
 
 		} catch (FeatureParsingException | IOException e) {
-			LOGGER.error("Some fail in logic", e);
+			LOGGER.log(Level.WARNING, "Some fail in logic", e);
 		}
 		return res;
 	}

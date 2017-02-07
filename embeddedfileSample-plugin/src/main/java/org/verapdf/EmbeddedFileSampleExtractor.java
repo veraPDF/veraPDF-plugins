@@ -1,6 +1,5 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractEmbeddedFileFeaturesExtractor;
 import org.verapdf.features.EmbeddedFileFeaturesData;
@@ -14,6 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
@@ -21,8 +22,7 @@ import java.util.*;
 public class EmbeddedFileSampleExtractor extends
         AbstractEmbeddedFileFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(EmbeddedFileSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(EmbeddedFileSampleExtractor.class.getCanonicalName());
 
     @Override
     public List<FeatureTreeNode> getEmbeddedFileFeatures(
@@ -49,7 +49,7 @@ public class EmbeddedFileSampleExtractor extends
             addObjectNode("subtype", embeddedFileFeaturesData.getSubtype(), res);
 
         } catch (IOException | FeatureParsingException | DatatypeConfigurationException e) {
-            LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "IO/Exception when adding information", e);
         }
         return res;
     }

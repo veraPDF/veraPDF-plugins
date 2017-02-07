@@ -1,6 +1,5 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractFontFeaturesExtractor;
 import org.verapdf.features.FontFeaturesData;
@@ -11,14 +10,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(FontTypeExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(FontTypeExtractor.class.getCanonicalName());
 
 	private static final byte[] OPENTYPE_BEGIN = new byte[]{0x4f, 0x54, 0x54, 0x4f};
 	private static final byte[] PS_TYPE1_BEGIN = new byte[]{0x25, 0x21};
@@ -37,7 +37,7 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 			fontTypeFromFile.setValue(fontType);
 			res.add(fontTypeFromFile);
 		} catch (FeatureParsingException | IOException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "Exception extracting font features", e);
 		}
 
 		return res;

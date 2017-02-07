@@ -1,6 +1,5 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractICCProfileFeaturesExtractor;
 import org.verapdf.features.ICCProfileFeaturesData;
@@ -10,14 +9,15 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtractor {
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ArgyllICCDumpCLIExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(ArgyllICCDumpCLIExtractor.class.getCanonicalName());
 
 	private File temp;
 
@@ -26,7 +26,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		try {
 			temp = File.createTempFile("tempICC", ".icc");
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "IO Exception when creating temp file", e);
 			return null;
 		}
 
@@ -35,12 +35,12 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 		try {
 			res = execCLI();
 		} catch (InterruptedException | FeatureParsingException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "Problem Executing the Argyll ICC Extractor", e);
 		}
 		try {
 			clean();
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "IO Exception during cleanup", e);
 		}
 
 		return res;
@@ -71,7 +71,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 						int eqind = line.indexOf("=");
 						String name = line.substring(0, eqind).trim();
 						String value = line.substring(eqind + 1).trim();
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("headerEntry", header);
+						FeatureTreeNode entry = header.addChild("headerEntry");
 						entry.setAttribute("name", name);
 						entry.setAttribute("value", value);
 						line = reader.readLine();
@@ -86,7 +86,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 						int spind = line.trim().indexOf(" ");
 						String name = line.trim().substring(0, spind);
 						String value = line.trim().substring(spind).trim();
-						FeatureTreeNode.createChildNode(name, tag).setValue(value);
+						tag.addChild(name).setValue(value);
 						line = reader.readLine();
 					}
 					res.add(tag);
@@ -96,7 +96,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 			}
 			pr.waitFor();
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "IO/Exception when reading object stream", e);
 		}
 
 		if (res.isEmpty()) {
@@ -117,7 +117,7 @@ public class ArgyllICCDumpCLIExtractor extends AbstractICCProfileFeaturesExtract
 				out.write(bytes, 0, length);
 			}
 		} catch (IOException e) {
-			LOGGER.error(e);
+			LOGGER.log(Level.WARNING, "IO/Exception when outputing icc to temp file", e);
 		}
 	}
 
