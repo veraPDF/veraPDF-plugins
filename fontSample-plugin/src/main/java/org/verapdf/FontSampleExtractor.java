@@ -29,10 +29,10 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(fontFeaturesData.getStream())));
 			res.add(stream);
 
-			byte[] meta = inputStreamToByteArray(fontFeaturesData.getMetadata());
-			if (meta != null) {
+			InputStream metadataStream = fontFeaturesData.getMetadata();
+			if (metadataStream != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(metadataStream)));
 				res.add(metadata);
 			}
 
