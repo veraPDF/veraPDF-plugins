@@ -17,12 +17,68 @@
             <artifactId>mets</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/mets-api.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/mets-api.jar
+            </systemPath>
         </dependency>
         <dependency>
             <groupId>org.verapdf</groupId>
             <artifactId>core</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-file</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>au.edu.apsr.mtk</groupId>
+                            <artifactId>mets</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <file>${project.basedir}/src/main/resources/mets-api.jar
+                            </file>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>au.edu.apsr.mtk</groupId>
+                                    <artifactId>mets</artifactId>
+                                    <version>1.0</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>target/classes
+                                    </outputDirectory>
+                                    <includes>**/*.class,**/*.xml</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
