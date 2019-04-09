@@ -3,10 +3,10 @@ sudo: required
 dist: trusty
 
 jdk:
-  - openjdk7
   - openjdk8
-  - oraclejdk7
-  - oraclejdk8
+  - openjdk9
+  - oraclejdk9
+  - oraclejdk11
 
 branches:
   except:
