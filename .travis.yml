@@ -7,6 +7,7 @@ jdk:
   - oraclejdk8
   - openjdk9
   - oraclejdk9
+  - oraclejdk11
 
 branches:
   except:
