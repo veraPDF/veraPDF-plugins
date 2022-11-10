@@ -5,7 +5,6 @@ import org.verapdf.features.AbstractFontFeaturesExtractor;
 import org.verapdf.features.FontFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
-import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

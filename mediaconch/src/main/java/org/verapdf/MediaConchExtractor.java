@@ -5,7 +5,6 @@ import org.verapdf.features.AbstractEmbeddedFileFeaturesExtractor;
 import org.verapdf.features.EmbeddedFileFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
-import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.util.*;
 

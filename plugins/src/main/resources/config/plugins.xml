@@ -41,6 +41,12 @@
     <pluginJar>plugins/embeddedfileSample-plugin/embeddedfileSample-plugin-${project.version}.jar</pluginJar>
   </plugin>
   <plugin enabled="false">
+    <name>iccdump-plugin</name>
+    <version>${project.version}</version>
+    <description>iccdump-plugin</description>
+    <pluginJar>plugins/iccdump-plugin/iccdump-plugin-${project.version}.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
     <name>ICC Profile Sample</name>
     <version>${project.version}</version>
     <description>Sample, proof of concept, ICC Profile plugin. Developed by the veraPDF team.</description>
@@ -53,9 +59,27 @@
     <pluginJar>plugins/imageSample-plugin/imageSample-plugin-${project.version}.jar</pluginJar>
   </plugin>
   <plugin enabled="false">
+    <name>jpylyzer-plugin</name>
+    <version>${project.version}</version>
+    <description>jpylyzer-plugin</description>
+    <pluginJar>plugins/jpylyzer-plugin/jpylyzer-plugin-${project.version}.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>mediaconch-plugin</name>
+    <version>${project.version}</version>
+    <description>mediaconch-plugin</description>
+    <pluginJar>plugins/mediaconch-plugin/mediaconch-plugin-${project.version}.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
     <name>METS metadata extraction Sample</name>
     <version>${project.version}</version>
     <description>Sample, proof of concept, METS metadata extraction plugin. Developed by the veraPDF team.</description>
     <pluginJar>plugins/metsMetadata-plugin/metsMetadata-plugin-${project.version}.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>ots-plugin</name>
+    <version>${project.version}</version>
+    <description>ots-plugin</description>
+    <pluginJar>plugins/ots-plugin/ots-plugin-${project.version}.jar</pluginJar>
   </plugin>
 </pluginsConfig>

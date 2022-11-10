@@ -1,12 +1,12 @@
 package org.verapdf;
 
 import au.edu.apsr.mtk.base.*;
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.XMPMetaFactory;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import com.adobe.xmp.impl.VeraPDFXMPNode;
-import com.adobe.xmp.impl.XMPSchemaRegistryImpl;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.XMPMeta;
+import org.verapdf.xmp.XMPMetaFactory;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import org.verapdf.xmp.impl.VeraPDFXMPNode;
+import org.verapdf.xmp.impl.XMPSchemaRegistryImpl;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractMetadataFeaturesExtractor;
 import org.verapdf.features.MetadataFeaturesData;
@@ -14,7 +14,6 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
