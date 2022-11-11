@@ -5,7 +5,7 @@
     <parent>
         <artifactId>verapdf-plugins</artifactId>
         <groupId>org.verapdf.plugins</groupId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>1.23.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,6 +28,11 @@
           <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.verapdf.plugins</groupId>
+            <artifactId>iccdump-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
           <groupId>org.verapdf.plugins</groupId>
           <artifactId>iccprofileSample-plugin</artifactId>
           <version>${project.version}</version>
@@ -38,9 +43,24 @@
           <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.verapdf.plugins</groupId>
+            <artifactId>jpylyzer-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.verapdf.plugins</groupId>
+            <artifactId>mediaconch-plugin</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
           <groupId>org.verapdf.plugins</groupId>
           <artifactId>metsMetadata-plugin</artifactId>
           <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.verapdf.plugins</groupId>
+            <artifactId>ots-plugin</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

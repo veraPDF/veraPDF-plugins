@@ -1,6 +1,6 @@
 package org.verapdf;
 
-import com.adobe.xmp.impl.XMPSchemaRegistryImpl;
+import org.verapdf.xmp.impl.XMPSchemaRegistryImpl;
 
 /**
  * @author Maksim Bezrukov
