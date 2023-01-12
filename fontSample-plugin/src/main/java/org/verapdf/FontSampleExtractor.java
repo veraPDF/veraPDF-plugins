@@ -25,9 +25,9 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(fontFeaturesData.getStream())));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(fontFeaturesData.getStream())));
+//			res.add(stream);
 
 			InputStream metadataStream = fontFeaturesData.getMetadata();
 			if (metadataStream != null) {

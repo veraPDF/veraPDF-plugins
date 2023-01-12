@@ -29,11 +29,11 @@ public class EmbeddedFileSampleExtractor extends
             EmbeddedFileFeaturesData embeddedFileFeaturesData) {
         List<FeatureTreeNode> res = new ArrayList<>();
         try {
-            FeatureTreeNode stream = FeatureTreeNode
-                    .createRootNode("streamContent");
-            stream.setValue(DatatypeConverter
-                    .printHexBinary(inputStreamToByteArray(embeddedFileFeaturesData.getStream())));
-            res.add(stream);
+//            FeatureTreeNode stream = FeatureTreeNode
+//                    .createRootNode("streamContent");
+//            stream.setValue(DatatypeConverter
+//                    .printHexBinary(inputStreamToByteArray(embeddedFileFeaturesData.getStream())));
+//            res.add(stream);
 
             addObjectNode("checkSum", embeddedFileFeaturesData.getCheckSum(),
                     res);
@@ -48,7 +48,7 @@ public class EmbeddedFileSampleExtractor extends
             addObjectNode("size", embeddedFileFeaturesData.getSize(), res);
             addObjectNode("subtype", embeddedFileFeaturesData.getSubtype(), res);
 
-        } catch (IOException | FeatureParsingException | DatatypeConfigurationException e) {
+        } catch (/*IOException |*/ FeatureParsingException | DatatypeConfigurationException e) {
 			LOGGER.log(Level.WARNING, "IO/Exception when adding information", e);
         }
         return res;
@@ -77,13 +77,13 @@ public class EmbeddedFileSampleExtractor extends
 
     }
 
-    private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] bytes = new byte[1024];
-        int length;
-        while ((length = is.read(bytes)) != -1) {
-            baos.write(bytes, 0, length);
-        }
-        return baos.toByteArray();
-    }
+//    private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        byte[] bytes = new byte[1024];
+//        int length;
+//        while ((length = is.read(bytes)) != -1) {
+//            baos.write(bytes, 0, length);
+//        }
+//        return baos.toByteArray();
+//    }
 }
