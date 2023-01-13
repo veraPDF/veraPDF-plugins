@@ -26,9 +26,9 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(imageFeaturesData.getStream())));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(imageFeaturesData.getStream())));
+//			res.add(stream);
 
 			InputStream meta = imageFeaturesData.getMetadata();
 			if (meta != null) {
@@ -55,11 +55,11 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 					}
 
 					//Special case for JBIG2Decode filter
-					InputStream streamF = filter.getStream();
-					if (streamF != null) {
-						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
-						filterNode.addChild("stream").setValue(streamContent);
-					}
+//					InputStream streamF = filter.getStream();
+//					if (streamF != null) {
+//						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
+//						filterNode.addChild("stream").setValue(streamContent);
+//					}
 				}
 			}
 

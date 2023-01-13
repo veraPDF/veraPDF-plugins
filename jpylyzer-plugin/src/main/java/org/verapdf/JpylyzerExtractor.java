@@ -101,7 +101,7 @@ public class JpylyzerExtractor extends AbstractImageFeaturesExtractor {
 		nodes.add(node);
 
 		try {
-			String isValidJP2Value = getXMLNodeValue("//jpylyzer/isValidJP2", out);
+			String isValidJP2Value = getXMLNodeValue("//jpylyzer/file/isValid", out);
 			FeatureTreeNode validationNode = FeatureTreeNode.createRootNode("isValidJP2");
 			validationNode.setValue(isValidJP2Value);
 			nodes.add(validationNode);

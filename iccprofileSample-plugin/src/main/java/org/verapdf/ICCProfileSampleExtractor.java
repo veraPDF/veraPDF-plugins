@@ -26,9 +26,9 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 	public List<FeatureTreeNode> getICCProfileFeatures(ICCProfileFeaturesData iccProfileFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(iccProfileFeaturesData.getStream())));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(iccProfileFeaturesData.getStream())));
+//			res.add(stream);
 
 			InputStream meta = iccProfileFeaturesData.getMetadata();
 			if (meta != null) {
