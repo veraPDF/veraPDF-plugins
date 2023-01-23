@@ -9,11 +9,12 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
             <excludes>
                 <exclude>org.verapdf:core</exclude>
-                <exclude>org.verapdf:pdf-model</exclude>
-                <exclude>org.verapdf:verapdf-xmp-core</exclude>
-                <exclude>rhino:js</exclude>
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+                <exclude>com.sun.xml.bind:jaxb-impl</exclude>
+                <exclude>com.sun.xml.bind:jaxb-core</exclude>
             </excludes>
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
