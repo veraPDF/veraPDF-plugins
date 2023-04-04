@@ -3,63 +3,63 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>verapdf-plugins</artifactId>
+        <artifactId>verapdf-plugins-jakarta</artifactId>
         <groupId>org.verapdf.plugins</groupId>
         <version>1.23.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>plugins</artifactId>
+    <artifactId>plugins-jakarta</artifactId>
 
     <dependencies>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>embeddedfileSample-plugin</artifactId>
+          <artifactId>embeddedfileSample-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>fontSample-plugin</artifactId>
+          <artifactId>fontSample-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>fontType-plugin</artifactId>
+          <artifactId>fontType-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.verapdf.plugins</groupId>
-            <artifactId>iccdump-plugin</artifactId>
+            <artifactId>iccdump-plugin-jakarta</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>iccprofileSample-plugin</artifactId>
+          <artifactId>iccprofileSample-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>imageSample-plugin</artifactId>
+          <artifactId>imageSample-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.verapdf.plugins</groupId>
-            <artifactId>jpylyzer-plugin</artifactId>
+            <artifactId>jpylyzer-plugin-jakarta</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.verapdf.plugins</groupId>
-            <artifactId>mediaconch-plugin</artifactId>
+            <artifactId>mediaconch-plugin-jakarta</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
           <groupId>org.verapdf.plugins</groupId>
-          <artifactId>metsMetadata-plugin</artifactId>
+          <artifactId>metsMetadata-plugin-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.verapdf.plugins</groupId>
-            <artifactId>ots-plugin</artifactId>
+            <artifactId>ots-plugin-jakarta</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

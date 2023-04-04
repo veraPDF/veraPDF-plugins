@@ -5,7 +5,7 @@ import org.verapdf.features.AbstractImageFeaturesExtractor;
 import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

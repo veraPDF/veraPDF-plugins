@@ -4,32 +4,32 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>verapdf-plugins</artifactId>
+        <artifactId>verapdf-plugins-jakarta</artifactId>
         <groupId>org.verapdf.plugins</groupId>
         <version>1.23.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mediaconch-plugin</artifactId>
+    <artifactId>mediaconch-plugin-jakarta</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.verapdf</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>core-jakarta</artifactId>
         </dependency>
 
         <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
 
         <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
         <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-core</artifactId>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-core</artifactId>
         </dependency>
     </dependencies>
 

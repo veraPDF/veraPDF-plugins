@@ -5,7 +5,7 @@ import org.verapdf.features.AbstractEmbeddedFileFeaturesExtractor;
 import org.verapdf.features.EmbeddedFileFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;

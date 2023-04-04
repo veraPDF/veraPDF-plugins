@@ -12,9 +12,9 @@
             <useTransitiveDependencies>false</useTransitiveDependencies>
             <excludes>
                 <exclude>org.verapdf:core</exclude>
-                <exclude>javax.xml.bind:jaxb-api</exclude>
-                <exclude>com.sun.xml.bind:jaxb-impl</exclude>
-                <exclude>com.sun.xml.bind:jaxb-core</exclude>
+                <exclude>jakarta.xml.bind:jakarta.xml.bind-api</exclude>
+                <exclude>org.glassfish.jaxb:jaxb-runtime</exclude>
+                <exclude>org.glassfish.jaxb:jaxb-core</exclude>
             </excludes>
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
