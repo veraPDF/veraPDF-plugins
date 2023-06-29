@@ -1,12 +1,12 @@
 package org.verapdf;
 
 import au.edu.apsr.mtk.base.*;
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.XMPMetaFactory;
-import com.adobe.xmp.impl.VeraPDFMeta;
-import com.adobe.xmp.impl.VeraPDFXMPNode;
-import com.adobe.xmp.impl.XMPSchemaRegistryImpl;
+import org.verapdf.xmp.XMPException;
+import org.verapdf.xmp.XMPMeta;
+import org.verapdf.xmp.XMPMetaFactory;
+import org.verapdf.xmp.impl.VeraPDFMeta;
+import org.verapdf.xmp.impl.VeraPDFXMPNode;
+import org.verapdf.xmp.impl.XMPSchemaRegistryImpl;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractMetadataFeaturesExtractor;
 import org.verapdf.features.MetadataFeaturesData;
@@ -14,7 +14,6 @@ import org.verapdf.features.tools.FeatureTreeNode;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -39,8 +38,7 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
         List<FeatureTreeNode> result = new ArrayList<>(1);
         try {
             File outFile = getOutFile(result);
-            byte[] bytes = metadataFeaturesData.getStream();
-            convertXMPToMETS(new ByteArrayInputStream(bytes), new FileOutputStream(outFile));
+            convertXMPToMETS(metadataFeaturesData.getStream(), new FileOutputStream(outFile));
             FeatureTreeNode node = FeatureTreeNode.createRootNode("resultFile");
             node.setValue(outFile.getCanonicalPath());
             result.add(node);
@@ -219,23 +217,18 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
     }
 
     private File getOutFile(List<FeatureTreeNode> nodes) throws FeatureParsingException, IOException {
-        METSConfig config = getConfig(nodes);
-        if (config.getOutFolder() == null) {
-            File tempFolder = getTempFolder();
-            File res = getOutFileInFolder(tempFolder);
-            return res;
+        String out = getAttributes().get("outFolder");
+        if (out == null) {
+            return getOutFileInFolder(getTempFolder());
         } else {
-            File outFolder = new File(config.getOutFolder());
+            File outFolder = new File(out);
             if (outFolder.isDirectory()) {
-                File res = getOutFileInFolder(outFolder);
-                return res;
+                return getOutFileInFolder(outFolder);
             } else {
                 FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
                 node.setValue("Config file contains out folder path but it doesn't link a directory.");
                 nodes.add(node);
-                File tempFolder = getTempFolder();
-                File res = getOutFileInFolder(tempFolder);
-                return res;
+                return getOutFileInFolder(getTempFolder());
             }
         }
     }
@@ -251,34 +244,5 @@ public class METSMetadataExtractor extends AbstractMetadataFeaturesExtractor {
 
     private File getOutFileInFolder(File folder) throws IOException {
         return File.createTempFile("veraPDF_METS_Plugin_out", ".xml", folder);
-    }
-
-    private METSConfig getConfig(List<FeatureTreeNode> nodes) throws FeatureParsingException {
-        METSConfig config = METSConfig.defaultInstance();
-        File conf = getConfigFile();
-        if (conf.isFile() && conf.canRead()) {
-            try {
-                config = METSConfig.fromXml(new FileInputStream(conf));
-            } catch (JAXBException | FileNotFoundException e) {
-                FeatureTreeNode node = FeatureTreeNode.createRootNode("error");
-                node.setValue("Config file contains wrong syntax. Error message: " + e.getMessage());
-                nodes.add(node);
-            }
-        }
-        return config;
-    }
-
-    private File getConfigFile() {
-        return new File(getFolderPath().toFile(), "config.xml");
-    }
-
-    @Override
-    public String getID() {
-        return "63f0a295-587b-4e50-909c-4b47e02f64f7";
-    }
-
-    @Override
-    public String getDescription() {
-        return "This extractor generates METS file based on XMP package.";
     }
 }

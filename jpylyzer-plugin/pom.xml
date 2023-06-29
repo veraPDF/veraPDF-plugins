@@ -2,14 +2,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>verapdf-library-samples</artifactId>
-        <groupId>org.verapdf</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>verapdf-plugins</artifactId>
+        <groupId>org.verapdf.plugins</groupId>
+        <version>1.24.0</version>
+    </parent>
 
     <artifactId>jpylyzer-plugin</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.verapdf</groupId>
+            <artifactId>core</artifactId>
 
+        </dependency>
+        <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

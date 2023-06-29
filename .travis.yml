@@ -1,0 +1,14 @@
+language: java
+sudo: required
+dist: trusty
+
+jdk:
+  - openjdk8
+  - openjdk9
+  - oraclejdk9
+  - oraclejdk11
+
+branches:
+  except:
+    - /^v|d\d+\.\d+\.\d+$/
+    - /^jenkins-veraPDF-plugins-v|d\\d+\\.\\d+\\.\\d+$/

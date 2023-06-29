@@ -1,36 +1,39 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractImageFeaturesExtractor;
 import org.verapdf.features.ImageFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(ImageSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(ImageSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getImageFeatures(ImageFeaturesData imageFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(imageFeaturesData.getStream()));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(imageFeaturesData.getStream())));
+//			res.add(stream);
 
-			byte[] meta = imageFeaturesData.getMetadata();
+			InputStream meta = imageFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(meta)));
 				res.add(metadata);
 			}
 
@@ -42,26 +45,26 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 				FeatureTreeNode filtersNode = FeatureTreeNode.createRootNode("filters");
 				res.add(filtersNode);
 				for (ImageFeaturesData.Filter filter : filters) {
-					FeatureTreeNode filterNode = FeatureTreeNode.createChildNode("filter", filtersNode);
+					FeatureTreeNode filterNode = filtersNode.addChild("filter");
 					filterNode.setAttribute("name", String.valueOf(filter.getName()));
 					Map<String, String> properties = filter.getProperties();
 					if (properties != null) {
 						for (Map.Entry entry : properties.entrySet()) {
-							FeatureTreeNode.createChildNode(String.valueOf(entry.getKey()), filterNode).setValue(String.valueOf(entry.getValue()));
+							filterNode.addChild(String.valueOf(entry.getKey())).setValue(String.valueOf(entry.getValue()));
 						}
 					}
 
 					//Special case for JBIG2Decode filter
-					byte[] streamF = filter.getStream();
-					if (streamF != null) {
-						String streamContent = DatatypeConverter.printHexBinary(streamF);
-						FeatureTreeNode.createChildNode("stream", filterNode).setValue(streamContent);
-					}
+//					InputStream streamF = filter.getStream();
+//					if (streamF != null) {
+//						String streamContent = DatatypeConverter.printHexBinary(inputStreamToByteArray(streamF));
+//						filterNode.addChild("stream").setValue(streamContent);
+//					}
 				}
 			}
 
-		} catch (FeatureParsingException e) {
-			LOGGER.error("Some fail in logic", e);
+		} catch (FeatureParsingException | IOException e) {
+			LOGGER.log(Level.WARNING, "Some fail in logic", e);
 		}
 		return res;
 	}
@@ -76,14 +79,13 @@ public class ImageSampleExtractor extends AbstractImageFeaturesExtractor {
 		return node;
 	}
 
-	@Override
-	public String getID() {
-		return "163e5726-3c5a-4701-abdc-428005c8c39d";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"ImageFeaturesData object.";
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }

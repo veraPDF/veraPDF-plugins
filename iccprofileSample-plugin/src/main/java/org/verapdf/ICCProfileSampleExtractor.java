@@ -1,35 +1,39 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractICCProfileFeaturesExtractor;
 import org.verapdf.features.ICCProfileFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
-
-import javax.xml.bind.DatatypeConverter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Maksim Bezrukov
  */
 public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtractor {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(ICCProfileSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(ICCProfileSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getICCProfileFeatures(ICCProfileFeaturesData iccProfileFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(iccProfileFeaturesData.getStream()));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(iccProfileFeaturesData.getStream())));
+//			res.add(stream);
 
-			byte[] meta = iccProfileFeaturesData.getMetadata();
+			InputStream meta = iccProfileFeaturesData.getMetadata();
 			if (meta != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(meta)));
 				res.add(metadata);
 			}
 
@@ -42,15 +46,15 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 				for (int i = 0; i < range.size(); ++i) {
 					Double obj = range.get(i);
 					if (obj != null) {
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+						FeatureTreeNode entry = rangeNode.addChild("entry");
 						entry.setValue(obj.toString());
 						entry.setAttribute("index", String.valueOf(i));
 					}
 				}
 			}
 
-		} catch (FeatureParsingException e) {
-			LOGGER.error("Some fail in logic", e);
+		} catch (FeatureParsingException | IOException e) {
+			LOGGER.log(Level.WARNING, "Some failure in ICC scampler", e);
 		}
 		return res;
 	}
@@ -65,14 +69,13 @@ public class ICCProfileSampleExtractor extends AbstractICCProfileFeaturesExtract
 		return node;
 	}
 
-	@Override
-	public String getID() {
-		return "ad7c3157-5865-4e8a-8f47-57f81580b612";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"ICCProfileFeaturesData object.";
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }

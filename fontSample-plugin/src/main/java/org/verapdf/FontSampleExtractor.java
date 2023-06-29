@@ -1,35 +1,38 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractFontFeaturesExtractor;
 import org.verapdf.features.FontFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(FontSampleExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(FontSampleExtractor.class.getCanonicalName());
 
 	@Override
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 		try {
-			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
-			stream.setValue(DatatypeConverter.printHexBinary(fontFeaturesData.getStream()));
-			res.add(stream);
+//			FeatureTreeNode stream = FeatureTreeNode.createRootNode("streamContent");
+//			stream.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(fontFeaturesData.getStream())));
+//			res.add(stream);
 
-			byte[] meta = fontFeaturesData.getMetadata();
-			if (meta != null) {
+			InputStream metadataStream = fontFeaturesData.getMetadata();
+			if (metadataStream != null) {
 				FeatureTreeNode metadata = FeatureTreeNode.createRootNode("metadataStreamContent");
-				metadata.setValue(DatatypeConverter.printHexBinary(meta));
+				metadata.setValue(DatatypeConverter.printHexBinary(inputStreamToByteArray(metadataStream)));
 				res.add(metadata);
 			}
 
@@ -47,7 +50,7 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 				for (int i = 0; i < bbox.size(); ++i) {
 					Double obj = bbox.get(i);
 					if (obj != null) {
-						FeatureTreeNode entry = FeatureTreeNode.createChildNode("entry", rangeNode);
+						FeatureTreeNode entry = rangeNode.addChild("entry");
 						entry.setValue(obj.toString());
 						entry.setAttribute("index", String.valueOf(i));
 					}
@@ -67,7 +70,9 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 			addObjectNode("xHeight", fontFeaturesData.getXHeight(), res);
 
 		} catch (FeatureParsingException e) {
-			LOGGER.error("Some fail in logic", e);
+			LOGGER.log(Level.WARNING, "Some fail in logic", e);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return res;
 	}
@@ -82,14 +87,13 @@ public class FontSampleExtractor extends AbstractFontFeaturesExtractor {
 		return node;
 	}
 
-	@Override
-	public String getID() {
-		return "8b06613d-b5d0-47b5-a7e6-4900cea4823c";
-	}
-
-	@Override
-	public String getDescription() {
-		return "This sample Extractor generates custom features report containing data from incoming " +
-				"FontFeaturesData object.";
+	private static byte[] inputStreamToByteArray(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+		}
+		return baos.toByteArray();
 	}
 }

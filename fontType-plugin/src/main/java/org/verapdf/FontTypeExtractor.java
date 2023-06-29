@@ -1,21 +1,24 @@
 package org.verapdf;
 
-import org.apache.log4j.Logger;
 import org.verapdf.core.FeatureParsingException;
 import org.verapdf.features.AbstractFontFeaturesExtractor;
 import org.verapdf.features.FontFeaturesData;
 import org.verapdf.features.tools.FeatureTreeNode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Maksim Bezrukov
  */
 public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(FontTypeExtractor.class);
+    private static final Logger LOGGER = Logger.getLogger(FontTypeExtractor.class.getCanonicalName());
 
 	private static final byte[] OPENTYPE_BEGIN = new byte[]{0x4f, 0x54, 0x54, 0x4f};
 	private static final byte[] PS_TYPE1_BEGIN = new byte[]{0x25, 0x21};
@@ -28,26 +31,28 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 	public List<FeatureTreeNode> getFontFeatures(FontFeaturesData fontFeaturesData) {
 		List<FeatureTreeNode> res = new ArrayList<>();
 
-		String fontType = getFontType(fontFeaturesData.getStream());
 		try {
+			String fontType = getFontType(fontFeaturesData.getStream());
 			FeatureTreeNode fontTypeFromFile = FeatureTreeNode.createRootNode("fontTypeFromFile");
 			fontTypeFromFile.setValue(fontType);
 			res.add(fontTypeFromFile);
-		} catch (FeatureParsingException e) {
-			LOGGER.error(e);
+		} catch (FeatureParsingException | IOException e) {
+			LOGGER.log(Level.WARNING, "Exception extracting font features", e);
 		}
 
 		return res;
 	}
 
-	private static String getFontType(byte[] file) {
-		if (startsWith(file, PS_TYPE1_BEGIN)) {
+	private static String getFontType(InputStream file) throws IOException {
+		byte[] firstFour = getFirstFourBytes(file);
+
+		if (startsWith(firstFour, PS_TYPE1_BEGIN)) {
 			return "PS Type1";
-		} else if (startsWith(file, OPENTYPE_BEGIN)) {
+		} else if (startsWith(firstFour, OPENTYPE_BEGIN)) {
 			return "OpenType";
-		} else if (startsWith(file, TRUE_TYPE_BEGIN) || startsWith(file, TRUE_TYPE_TRUE_BEGIN)) {
+		} else if (startsWith(firstFour, TRUE_TYPE_BEGIN) || startsWith(firstFour, TRUE_TYPE_TRUE_BEGIN)) {
 			return "TrueType";
-		} else if (file[0] == 1 && (file[1] >= 0 && file[1] <= 5)) {
+		} else if (firstFour[0] == 1 && (firstFour[1] >= 0 && firstFour[1] <= 5)) {
 			return "CFF Type1";
 		} else {
 			return UNDEFINED;
@@ -66,12 +71,18 @@ public class FontTypeExtractor extends AbstractFontFeaturesExtractor {
 		return true;
 	}
 
-	public String getDescription() {
-		return "This Extractor generates custom features report containing one entry " +
-				"that is the font type read from file.";
-	}
-
-	public String getID() {
-		return "f1a805ae-62ae-4520-9d3b-489e5ff4af68";
+	private static byte[] getFirstFourBytes(InputStream is) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		byte[] bytes = new byte[4];
+		int obtainedBytes = 0;
+		int length;
+		while ((length = is.read(bytes)) != -1) {
+			baos.write(bytes, 0, length);
+			obtainedBytes += length;
+			if (obtainedBytes >= 4) {
+				break;
+			}
+		}
+		return baos.toByteArray();
 	}
 }
