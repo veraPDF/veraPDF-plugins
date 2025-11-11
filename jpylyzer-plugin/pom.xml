@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.jpylyzer.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.jpylyzer</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -61,7 +61,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.iccprofile.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.iccprofile</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

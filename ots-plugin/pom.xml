@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.ost.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.ots</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.embeddedfileSample.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.embeddedfileSample</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.fontSample.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.fontSample</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

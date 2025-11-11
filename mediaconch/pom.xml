@@ -63,7 +63,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.mediaconch.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.mediaconch</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>

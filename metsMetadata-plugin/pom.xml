@@ -69,7 +69,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Automatic-Module-Name>org.verapdf.metsMetadata.plugin</Automatic-Module-Name>
+                            <Automatic-Module-Name>org.verapdf.plugin.metsMetadata</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
                 </configuration>
