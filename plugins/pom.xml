@@ -94,6 +94,17 @@
         </resource>
       </resources>
       <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                  <archive>
+                      <manifestEntries>
+                          <Automatic-Module-Name>org.verapdf.plugins</Automatic-Module-Name>
+                      </manifestEntries>
+                  </archive>
+              </configuration>
+          </plugin>
         <plugin>
            <artifactId>maven-assembly-plugin</artifactId>
            <version>2.2.1</version>
